@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+
+uploads/*
+!uploads/.gitkeep
+
+temp/
+outputs/
+blender/generated/
+
+v2/outputs/json/*.json
+v2/output/*.json
+
+.DS_Store
+Thumbs.db
