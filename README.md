@@ -391,6 +391,7 @@ I intentionally chose to publish the project in its current state because I beli
 - Cloud deployment
 - CAD-aware geometry generation
 
+
 ---
 
 # 🤝 Contributing
@@ -410,3 +411,10 @@ MIT License
 **Syed Ali Haider**
 
 This project is part of my Azure AI engineering portfolio and documents an ongoing exploration into using generative AI, computer vision and procedural graphics to make instructional manuals easier to understand.
+
+
+## ⚡ Disclaimer
+
+This project is an experimental research prototype created for learning, exploration and portfolio purposes.
+
+It demonstrates the feasibility of combining Azure OpenAI, computer vision and procedural graphics to automate assembly instruction generation. It should not yet be considered production-ready software.
