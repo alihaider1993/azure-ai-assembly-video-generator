@@ -155,19 +155,17 @@ python v2/run_mvp_pipeline.py
 
 # 📸 Demo
 
-# 📸 Demo
-
 The following screenshots demonstrate the complete AI pipeline, from uploading an assembly manual through AI understanding, Blender rendering, and the final generated animation.
 
 ---
 
-## 🖥️ Streamlit Dashboard
+# 🖥️ Streamlit Application
 
 ### Home Screen
 
 ![Home](github_demo_assets/screenshots/streamlit_home.png)
 
-*Clean Streamlit interface for uploading any instructional manual.*
+*Landing page of the Streamlit application.*
 
 ---
 
@@ -175,23 +173,49 @@ The following screenshots demonstrate the complete AI pipeline, from uploading a
 
 ![Upload](github_demo_assets/screenshots/streamlit_upload.png)
 
-*Upload any PDF assembly manual and begin the AI pipeline.*
+*Upload any instructional PDF to start the pipeline.*
 
 ---
 
-### AI Processing Pipeline
+### AI Processing
 
-![Pipeline](github_demo_assets/screenshots/streamlit_processing.png)
+![Processing](github_demo_assets/screenshots/streamlit_processing_start.png)
 
-*Live pipeline showing progress through every AI stage.*
+*Live AI pipeline showing every processing stage.*
 
 ---
 
-### Blender Rendering Progress
+# ⚙️ Pipeline Execution
 
-![Rendering](github_demo_assets/screenshots/blender_rendering.png)
+### Live Pipeline Logs
 
-*Real-time Blender frame generation.*
+![Pipeline Logs](github_demo_assets/screenshots/pipeline_logs.png)
+
+*Real-time logs from every AI agent.*
+
+---
+
+### Motion Planner
+
+![Motion Planner](github_demo_assets/screenshots/pipeline_motion_planner.png)
+
+*Motion planning generated from the Universal Assembly Graph.*
+
+---
+
+### Blender Rendering
+
+![Blender Rendering](github_demo_assets/screenshots/blender_rendering_progress.png)
+
+*Rendering frames inside Blender.*
+
+---
+
+### Live Frame Rendering Logs
+
+![Frame Rendering](github_demo_assets/screenshots/live_frame_rendering_logs.png)
+
+*Frame-by-frame rendering progress.*
 
 ---
 
@@ -199,17 +223,17 @@ The following screenshots demonstrate the complete AI pipeline, from uploading a
 
 ![Complete](github_demo_assets/screenshots/pipeline_complete.png)
 
-*Successful completion of the full AI workflow.*
+*Entire AI pipeline completed successfully.*
 
 ---
 
-## 🎥 Generated Assembly Animation
+# 🎥 Generated Results
 
-### Final Generated Video
+### Generated Assembly Video
 
 ![Generated Video](github_demo_assets/screenshots/generated_video.png)
 
-*AI-generated proxy assembly animation.*
+*Final AI-generated proxy assembly animation.*
 
 ---
 
@@ -217,113 +241,55 @@ The following screenshots demonstrate the complete AI pipeline, from uploading a
 
 ![Frame Preview](github_demo_assets/screenshots/frame_preview.png)
 
-*Preview of the first, middle and final rendered animation frames.*
+*Preview of the generated animation.*
 
 ---
 
-### Animation GIF
+### Animation Preview
 
-![Animation GIF](github_demo_assets/animation.gif)
+![Animation](github_demo_assets/animation.gif)
 
-*A short preview of the generated assembly animation.*
+*A short GIF preview of the generated assembly video.*
 
 ---
 
-## 📄 AI JSON Outputs
+# 📄 AI Generated JSON Outputs
 
-### Downloadable AI Outputs
+### JSON Outputs
 
 ![JSON Outputs](github_demo_assets/screenshots/json_outputs.png)
 
-*Every AI stage exports structured JSON for transparency and debugging.*
+*Every stage exports structured JSON describing the AI reasoning.*
 
 ---
 
-### Individual JSON Downloads
+### Download Individual JSON Files
 
-![Downloads](github_demo_assets/screenshots/json_downloads.png)
+![JSON Downloads](github_demo_assets/screenshots/json_downloads.png)
 
-*Download every intermediate AI artifact directly from the Streamlit interface.*
-
----
-
-## 🧠 AI Pipeline
-
-The project automatically executes the following pipeline:
-
-```
-Upload Manual PDF
-        │
-        ▼
-PDF → Images
-        │
-        ▼
-Azure GPT-4o Vision Analysis
-        │
-        ▼
-Page Understanding
-        │
-        ▼
-Assembly Action Extraction
-        │
-        ▼
-Object Identity Resolution
-        │
-        ▼
-Universal Assembly Graph
-        │
-        ▼
-Motion Planning
-        │
-        ▼
-Scene Layout Generation
-        │
-        ▼
-Diagram Analysis
-        │
-        ▼
-Part Shape Extraction
-        │
-        ▼
-Proxy Geometry Generation
-        │
-        ▼
-Automatic Blender Scene Generation
-        │
-        ▼
-Frame Rendering
-        │
-        ▼
-MoviePy Video Generation
-        │
-        ▼
-Final MP4 Animation
-```
+*Each intermediate AI artifact can be downloaded individually.*
 
 ---
 
-## 🎬 Loom Walkthrough
+# 🎬 Loom Walkthrough
 
 A complete walkthrough explaining:
 
 - Project motivation
-- Overall architecture
+- Architecture
 - AI pipeline
 - Universal Assembly Graph
-- Motion Planning
+- Motion Planner
 - Blender rendering
 - Streamlit application
 - Current limitations
 - Future roadmap
 
-▶️ **Watch here**
+▶️ **Watch the complete demo**
 
 ```
 https://www.loom.com/share/YOUR_LOOM_LINK
 ```
-
----
-
 ## 📂 Generated AI Artifacts
 
 Each run generates downloadable JSON files including:
