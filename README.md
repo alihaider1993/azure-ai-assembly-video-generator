@@ -221,7 +221,7 @@ The following screenshots demonstrate the complete AI pipeline, from uploading a
 
 ### Pipeline Complete
 
-![Complete](github_demo_assets/screenshots/pipeline_complete.png)
+![Complete](github_demo_assets/screenshots/generated_video.png)
 
 *Entire AI pipeline completed successfully.*
 
