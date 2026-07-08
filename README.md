@@ -116,6 +116,91 @@ The long-term vision is to help people assemble products more quickly and confid
 ---
 
 
+
+
+
+
+# 🛠 Technology Stack
+
+- Azure AI Foundry
+- Azure OpenAI GPT‑4o Vision
+- Python
+- Blender
+- Streamlit
+- MoviePy
+
+---
+
+# 📂 Project Structure
+
+```text
+app.py
+config.py
+uploads/
+utils/
+blender/
+outputs/
+v2/
+ ├── agents/
+ ├── builders/
+ ├── rendering/
+ ├── stabilize/
+ └── outputs/
+```
+
+---
+
+# ▶️ Running
+
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+or
+
+```bash
+python v2/run_mvp_pipeline.py
+```
+
+---
+
+## 📂 Generated AI Artifacts
+
+Each run generates downloadable JSON files including:
+
+- page_states.json
+- assembly_deltas.json
+- assembly_actions.json
+- object_identity_map.json
+- resolved_assembly_actions.json
+- universal_assembly_graph.json
+- motion_plan.json
+- scene_layout.json
+- geometry_spec.json
+- diagram_analysis.json
+- part_shapes.json
+- proxy_geometry.json
+
+These intermediate outputs make the AI pipeline fully transparent, explainable, and easy to debug.
+
+
+---
+## ⭐ Key Features
+
+- 🤖 Azure GPT-4o Vision powered manual understanding
+- 📄 Accepts any instructional PDF
+- 🧠 Universal Assembly Graph generation
+- 🔄 Canonical Object Identity Resolution
+- 🎯 Motion Planning Engine
+- 📐 Procedural Scene Layout Generation
+- 🧱 Automatic Proxy Geometry Creation
+- 🎬 Blender Python Scene Generation
+- 🎥 Automatic MP4 Rendering
+- 🌐 Interactive Streamlit Dashboard
+- 📊 Downloadable JSON outputs for every pipeline stage
+- 🔍 Fully explainable AI pipeline
+
 # 📸 Demo
 
 The following screenshots demonstrate the complete AI pipeline, from uploading an assembly manual through AI understanding, Blender rendering, and the final generated animation.
@@ -243,90 +328,6 @@ A complete walkthrough explaining:
 ```
 https://www.loom.com/share/YOUR_LOOM_LINK
 ```
-
-
-
-# 🛠 Technology Stack
-
-- Azure AI Foundry
-- Azure OpenAI GPT‑4o Vision
-- Python
-- Blender
-- Streamlit
-- MoviePy
-
----
-
-# 📂 Project Structure
-
-```text
-app.py
-config.py
-uploads/
-utils/
-blender/
-outputs/
-v2/
- ├── agents/
- ├── builders/
- ├── rendering/
- ├── stabilize/
- └── outputs/
-```
-
----
-
-# ▶️ Running
-
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-or
-
-```bash
-python v2/run_mvp_pipeline.py
-```
-
----
-
-## 📂 Generated AI Artifacts
-
-Each run generates downloadable JSON files including:
-
-- page_states.json
-- assembly_deltas.json
-- assembly_actions.json
-- object_identity_map.json
-- resolved_assembly_actions.json
-- universal_assembly_graph.json
-- motion_plan.json
-- scene_layout.json
-- geometry_spec.json
-- diagram_analysis.json
-- part_shapes.json
-- proxy_geometry.json
-
-These intermediate outputs make the AI pipeline fully transparent, explainable, and easy to debug.
-
-
----
-## ⭐ Key Features
-
-- 🤖 Azure GPT-4o Vision powered manual understanding
-- 📄 Accepts any instructional PDF
-- 🧠 Universal Assembly Graph generation
-- 🔄 Canonical Object Identity Resolution
-- 🎯 Motion Planning Engine
-- 📐 Procedural Scene Layout Generation
-- 🧱 Automatic Proxy Geometry Creation
-- 🎬 Blender Python Scene Generation
-- 🎥 Automatic MP4 Rendering
-- 🌐 Interactive Streamlit Dashboard
-- 📊 Downloadable JSON outputs for every pipeline stage
-- 🔍 Fully explainable AI pipeline
-
 
 # ⚠️ Current Status
 
