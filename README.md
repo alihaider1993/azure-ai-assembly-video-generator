@@ -1,3 +1,10 @@
+![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
+![Azure OpenAI](https://img.shields.io/badge/Azure%20OpenAI-GPT--4o-0078D4?logo=microsoftazure)
+![Azure AI Foundry](https://img.shields.io/badge/Azure-AI%20Foundry-0078D4)
+![Blender](https://img.shields.io/badge/Blender-5.x-orange?logo=blender)
+![Streamlit](https://img.shields.io/badge/Streamlit-App-red?logo=streamlit)
+![License](https://img.shields.io/badge/License-MIT-green)
+
 # 🚀 Azure AI Universal Assembly Video Generator
 
 <p align="center">
