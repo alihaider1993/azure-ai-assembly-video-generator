@@ -221,7 +221,7 @@ The following screenshots demonstrate the complete AI pipeline, from uploading a
 
 ### Pipeline Complete
 
-![Complete](github_demo_assets/screenshots/frame_preview.png)
+![Complete](github_demo_assets/screenshots/pipeline_complete.png)
 
 *Entire AI pipeline completed successfully.*
 
@@ -231,7 +231,7 @@ The following screenshots demonstrate the complete AI pipeline, from uploading a
 
 ### Generated Assembly Video
 
-![Generated Video]()
+![Generated Video](github_demo_assets/screenshots/generated_video.png)
 
 *Final AI-generated proxy assembly animation.*
 
@@ -239,7 +239,7 @@ The following screenshots demonstrate the complete AI pipeline, from uploading a
 
 ### Frame Preview
 
-![Frame Preview]()
+![Frame Preview](github_demo_assets/screenshots/frame_preview.png)
 
 *Preview of the generated animation.*
 
@@ -290,6 +290,7 @@ A complete walkthrough explaining:
 ```
 https://www.loom.com/share/YOUR_LOOM_LINK
 ```
+
 ## 📂 Generated AI Artifacts
 
 Each run generates downloadable JSON files including:
