@@ -307,12 +307,6 @@ Each run generates downloadable JSON files including:
 
 These intermediate outputs make the AI pipeline fully transparent, explainable, and easy to debug.
 
-Add:
-
-- Streamlit screenshots
-- Pipeline screenshots
-- Animation GIF
-- Loom video
 
 ---
 ## ⭐ Key Features
