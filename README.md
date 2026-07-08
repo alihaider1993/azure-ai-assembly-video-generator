@@ -308,6 +308,21 @@ Add:
 - Loom video
 
 ---
+## ⭐ Key Features
+
+- 🤖 Azure GPT-4o Vision powered manual understanding
+- 📄 Accepts any instructional PDF
+- 🧠 Universal Assembly Graph generation
+- 🔄 Canonical Object Identity Resolution
+- 🎯 Motion Planning Engine
+- 📐 Procedural Scene Layout Generation
+- 🧱 Automatic Proxy Geometry Creation
+- 🎬 Blender Python Scene Generation
+- 🎥 Automatic MP4 Rendering
+- 🌐 Interactive Streamlit Dashboard
+- 📊 Downloadable JSON outputs for every pipeline stage
+- 🔍 Fully explainable AI pipeline
+
 
 # ⚠️ Current Status
 
