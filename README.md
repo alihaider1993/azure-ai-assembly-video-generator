@@ -115,50 +115,6 @@ The long-term vision is to help people assemble products more quickly and confid
 
 ---
 
-# 🛠 Technology Stack
-
-- Azure AI Foundry
-- Azure OpenAI GPT‑4o Vision
-- Python
-- Blender
-- Streamlit
-- MoviePy
-
----
-
-# 📂 Project Structure
-
-```text
-app.py
-config.py
-uploads/
-utils/
-blender/
-outputs/
-v2/
- ├── agents/
- ├── builders/
- ├── rendering/
- ├── stabilize/
- └── outputs/
-```
-
----
-
-# ▶️ Running
-
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-or
-
-```bash
-python v2/run_mvp_pipeline.py
-```
-
----
 
 # 📸 Demo
 
@@ -287,6 +243,53 @@ A complete walkthrough explaining:
 ```
 https://www.loom.com/share/YOUR_LOOM_LINK
 ```
+
+
+
+# 🛠 Technology Stack
+
+- Azure AI Foundry
+- Azure OpenAI GPT‑4o Vision
+- Python
+- Blender
+- Streamlit
+- MoviePy
+
+---
+
+# 📂 Project Structure
+
+```text
+app.py
+config.py
+uploads/
+utils/
+blender/
+outputs/
+v2/
+ ├── agents/
+ ├── builders/
+ ├── rendering/
+ ├── stabilize/
+ └── outputs/
+```
+
+---
+
+# ▶️ Running
+
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+or
+
+```bash
+python v2/run_mvp_pipeline.py
+```
+
+---
 
 ## 📂 Generated AI Artifacts
 
