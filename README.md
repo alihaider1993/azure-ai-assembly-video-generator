@@ -253,16 +253,6 @@ The following screenshots demonstrate the complete AI pipeline, from uploading a
 
 ---
 
-# 📄 AI Generated JSON Outputs
-
-### JSON Outputs
-
-![JSON Outputs](github_demo_assets/screenshots/json_outputs.png)
-
-*Every stage exports structured JSON describing the AI reasoning.*
-
----
-
 ### Download Individual JSON Files
 
 ![JSON Downloads](github_demo_assets/screenshots/json_downloads.png)
