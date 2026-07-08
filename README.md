@@ -221,7 +221,7 @@ The following screenshots demonstrate the complete AI pipeline, from uploading a
 
 ### Pipeline Complete
 
-![Complete](github_demo_assets/screenshots/generated_video.png)
+![Complete](github_demo_assets/screenshots/frame_preview.png)
 
 *Entire AI pipeline completed successfully.*
 
@@ -231,7 +231,7 @@ The following screenshots demonstrate the complete AI pipeline, from uploading a
 
 ### Generated Assembly Video
 
-![Generated Video](github_demo_assets/screenshots/frame_preview.png)
+![Generated Video]()
 
 *Final AI-generated proxy assembly animation.*
 
