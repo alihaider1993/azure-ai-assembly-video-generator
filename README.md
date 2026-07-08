@@ -115,10 +115,19 @@ The long-term vision is to help people assemble products more quickly and confid
 
 ---
 
+## 📈 Current MVP
+
+- ✅ 12+ AI processing stages
+- ✅ 15+ JSON artifacts generated
+- ✅ Blender automated rendering
+- ✅ Streamlit interactive interface
+- ✅ Azure GPT-4o Vision integration
+- ✅ Universal Assembly Graph
+- ✅ Motion Planning Engine
+- ✅ Canonical Object Identity Resolution
 
 
-
-
+---
 
 # 🛠 Technology Stack
 
