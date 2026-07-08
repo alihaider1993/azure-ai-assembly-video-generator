@@ -337,6 +337,27 @@ A complete walkthrough explaining:
 ```
 https://www.loom.com/share/YOUR_LOOM_LINK
 ```
+## 🚀 Repository Highlights
+
+✔ End-to-end AI pipeline
+
+✔ Azure GPT-4o Vision
+
+✔ Blender automation
+
+✔ Streamlit web application
+
+✔ Explainable AI through downloadable JSON outputs
+
+✔ Universal Assembly Graph
+
+✔ Canonical Object Tracking
+
+✔ Motion Planning Engine
+
+✔ Procedural Geometry Generation
+
+---
 
 # ⚠️ Current Status
 
