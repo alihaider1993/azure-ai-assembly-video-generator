@@ -35,19 +35,44 @@ The long-term vision is to help people assemble products more quickly and confid
 
 ---
 
-# ✨ Current Capabilities
 
-- Upload an instructional manual (PDF)
-- Convert pages into images
-- AI-based page understanding
-- Extract parts, fasteners and tools
-- Detect assembly actions
-- Build a Universal Assembly Graph
-- Generate a motion plan
-- Create procedural proxy geometry
-- Automatically generate Blender scenes
-- Render an MP4 assembly animation
-- Streamlit web interface
+# 🎯 Project Vision
+
+The long-term vision of this project is to build a universal AI system capable of understanding **any instructional manual** and automatically generating an easy-to-follow animated assembly guide.
+
+Unlike traditional rule-based systems that rely on manually authored 3D models or predefined animation sequences, this project attempts to reason directly from the assembly manual itself.
+
+The system is designed to work with a wide range of products including:
+
+- 🪑 Furniture
+- 🚲 Bicycles
+- 🏋️ Gym equipment
+- 🧸 Children's toys
+- 🏠 Household appliances
+- 🧰 DIY kits
+- 🏭 Industrial equipment
+
+The objective is to bridge the gap between static instruction manuals and intuitive visual guidance using modern AI techniques including computer vision, reasoning, procedural graphics and automated animation generation.
+
+---
+
+# ✨ Current MVP Features
+
+The current prototype demonstrates an end-to-end AI pipeline capable of:
+
+- Uploading any instructional PDF
+- Converting PDF pages into images
+- Understanding diagrams using Azure GPT-4o Vision
+- Detecting parts, fasteners and tools
+- Tracking object identities across multiple pages
+- Extracting assembly actions
+- Building a Universal Assembly Graph
+- Planning assembly motions
+- Generating exploded assembly layouts
+- Creating procedural proxy geometry
+- Automatically generating Blender scenes
+- Rendering MP4 assembly animations
+- Exporting structured JSON outputs from every AI stage
 
 ---
 
@@ -98,6 +123,50 @@ The long-term vision is to help people assemble products more quickly and confid
                    +---------------------------+
                    | MP4 Assembly Animation    |
                    +---------------------------+
+
+---
+
+# ⚙️ How the AI Pipeline Works
+
+The pipeline does not generate animations directly.
+
+Instead, it gradually builds a digital understanding of the assembly process through multiple AI reasoning stages.
+
+```
+Assembly Manual
+        │
+        ▼
+Visual Understanding
+        │
+        ▼
+Object Recognition
+        │
+        ▼
+Action Recognition
+        │
+        ▼
+Object Identity Resolution
+        │
+        ▼
+Universal Assembly Graph
+        │
+        ▼
+Motion Planning
+        │
+        ▼
+Scene Generation
+        │
+        ▼
+Procedural Geometry
+        │
+        ▼
+Blender Animation
+        │
+        ▼
+Final MP4 Video
+```
+
+Each stage produces structured JSON outputs that are used by the following stage, making the entire AI pipeline transparent and explainable.
 
 ---
 
@@ -383,16 +452,42 @@ I intentionally chose to publish the project in its current state because I beli
 
 ---
 
-# 🚀 Future Work
+# 🚀 Future Roadmap
 
-- More accurate AI understanding
-- Better procedural 3D generation
-- Realistic assembly sequencing
-- Azure Speech narration
-- Physics-aware animations
-- Support for additional manual types
-- Cloud deployment
+## AI Improvements
+
+- Better diagram understanding
+- Multi-view reasoning
+- Improved object tracking
+- Higher confidence action extraction
+
+## Graphics
+
 - CAD-aware geometry generation
+- Realistic materials
+- Parametric modelling
+- Better proxy objects
+
+## Animation
+
+- Physics-aware motion
+- Collision detection
+- Subassembly animation
+- Camera path optimisation
+
+## Cloud
+
+- Azure Container Apps deployment
+- Batch processing
+- REST API
+- Azure Blob integration
+
+## User Experience
+
+- Azure Speech narration
+- Interactive playback
+- Step-by-step controls
+- Mobile-friendly interface
 
 
 ---
@@ -415,6 +510,17 @@ MIT License
 
 This project is part of my Azure AI engineering portfolio and documents an ongoing exploration into using generative AI, computer vision and procedural graphics to make instructional manuals easier to understand.
 
+---
+
+# ⭐ Lessons Learned
+
+This project demonstrates that generating assembly animations involves far more than simply rendering 3D objects.
+
+The most challenging aspect is enabling AI to understand *how* a product is assembled through visual reasoning, object tracking and graph construction before any animation can be produced.
+
+Although the current implementation remains an experimental MVP, it successfully validates the overall architecture and provides a strong foundation for future development toward a production-quality AI assembly system.
+
+---
 
 ## ⚡ Disclaimer
 
