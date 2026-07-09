@@ -51,50 +51,53 @@ The long-term vision is to help people assemble products more quickly and confid
 
 ---
 
-# 🏗 High-Level Architecture
+# 🏗 Enterprise AI Pipeline Architecture
 
-```text
-                    Upload PDF
-                         │
-                         ▼
-                PDF → Page Images
-                         │
-                         ▼
-              Azure GPT-4o Vision
-                         │
-                         ▼
-               Page State Extraction
-                         │
-                         ▼
-             Assembly Delta Detection
-                         │
-                         ▼
-           Assembly Action Extraction
-                         │
-                         ▼
-           Universal Assembly Graph
-                         │
-                         ▼
-                Motion Planner
-                         │
-                         ▼
-              Scene Layout Engine
-                         │
-                         ▼
-        Diagram & Shape Extraction
-                         │
-                         ▼
-          Procedural Geometry Builder
-                         │
-                         ▼
-         Blender Python Script Builder
-                         │
-                         ▼
-               Blender Rendering
-                         │
-                         ▼
-                MP4 Assembly Video
-```
+                        +--------------------+
+                        |  Assembly PDF      |
+                        +---------+----------+
+                                  |
+                                  v
+                    +----------------------------+
+                    | PDF Page Extraction        |
+                    +-------------+--------------+
+                                  |
+                                  v
+                    +----------------------------+
+                    | Azure GPT-4o Vision        |
+                    +-------------+--------------+
+                                  |
+                                  v
+        +--------------------------------------------------+
+        |      AI Understanding Pipeline                   |
+        |--------------------------------------------------|
+        | Diagram Detection                               |
+        | Page State Extraction                           |
+        | Assembly Delta Detection                        |
+        | Object Identity Resolution                      |
+        | Assembly Action Extraction                      |
+        | Universal Assembly Graph Construction           |
+        +----------------------+---------------------------+
+                               |
+                               v
+        +--------------------------------------------------+
+        |        Animation Planning Pipeline               |
+        |--------------------------------------------------|
+        | Motion Planner                                  |
+        | Scene Layout Engine                             |
+        | Procedural Geometry Generator                   |
+        | Blender Script Generator                        |
+        +----------------------+---------------------------+
+                               |
+                               v
+                   +---------------------------+
+                   | Blender Rendering Engine  |
+                   +-------------+-------------+
+                                 |
+                                 v
+                   +---------------------------+
+                   | MP4 Assembly Animation    |
+                   +---------------------------+
 
 ---
 
