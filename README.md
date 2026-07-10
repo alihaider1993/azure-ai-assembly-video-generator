@@ -19,7 +19,7 @@
 
 [▶ Click to watch Demo on Loom](https://www.loom.com/share/12703483af3d4d3187db376c63d08b1b)
 
-```
+---
 
 # 💡 Why I Built This Project
 
