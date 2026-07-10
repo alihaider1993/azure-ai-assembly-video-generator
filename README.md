@@ -21,7 +21,7 @@
 
 ```
 
-## 💡 Why I Built This Project
+# 💡 Why I Built This Project
 
 When I moved to the UK, I quickly realised that many products I bought required self-assembly. Whether it was furniture, bicycles, shelving, children's toys, gym equipment, household appliances or other DIY products, they almost always arrived with only an instruction manual containing diagrams and very little text.
 
