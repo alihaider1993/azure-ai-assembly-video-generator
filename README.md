@@ -17,9 +17,7 @@
 
 ---
 
-▶️ **Watch the complete demo**
-
-[▶ Click to watch on Loom](https://www.loom.com/share/12703483af3d4d3187db376c63d08b1b)
+[▶ Click to watch Demo on Loom](https://www.loom.com/share/12703483af3d4d3187db376c63d08b1b)
 
 ```
 
