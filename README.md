@@ -17,6 +17,13 @@
 
 ---
 
+▶️ **Watch the complete demo**
+
+```
+(https://www.loom.com/share/12703483af3d4d3187db376c63d08b1b)
+
+```
+
 ## 💡 Why I Built This Project
 
 When I moved to the UK, I quickly realised that many products I bought required self-assembly. Whether it was furniture, bicycles, shelving, children's toys, gym equipment, household appliances or other DIY products, they almost always arrived with only an instruction manual containing diagrams and very little text.
@@ -404,11 +411,8 @@ A complete walkthrough explaining:
 - Current limitations
 - Future roadmap
 
-▶️ **Watch the complete demo**
+---
 
-```
-https://www.loom.com/share/YOUR_LOOM_LINK
-```
 ## 🚀 Repository Highlights
 
 ✔ End-to-end AI pipeline
