@@ -80,7 +80,7 @@ The current prototype demonstrates an end-to-end AI pipeline capable of:
 
 ---
 
-# 🏗 Enterprise AI Pipeline Architecture
+# 🏗 AI Pipeline Architecture
 
                         +--------------------+
                         |  Assembly PDF      |
