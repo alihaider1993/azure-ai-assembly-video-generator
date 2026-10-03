@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Set
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from v2.agents.object_identity_tracker import identity_keys, is_assembly_like_part
+from v2.agents.object_identity_tracker import identity_keys, is_assembly_like_part, similar_name_key
 
 
 PAGE_STATES_PATH = Path("v2/outputs/json/page_states.json")
@@ -132,11 +132,26 @@ def part_kinds_from_pages(page_states: List[Dict[str, Any]]) -> List[Dict[str, A
         quantity = int(local_part.get("quantity_visible") or 1)
         existing = next((kind_by_key[k] for k in keys if k in kind_by_key), None)
 
+        if existing is None:
+            # Same part named slightly differently on another page ("long
+            # rail" / "long side rail"), unless both carry different labels.
+            similar = ""
+            for key in keys:
+                similar = similar_name_key(key, kind_by_key)
+                if similar:
+                    break
+            candidate = kind_by_key.get(similar)
+            labelled = any(k.startswith("label:") for k in keys)
+            if candidate and not (labelled and any(k.startswith("label:") for k in candidate["keys"])):
+                existing = candidate
+
         if existing:
             if not existing["from_parts_list"]:
                 existing["quantity"] = max(existing["quantity"], quantity)
             for key in keys:
-                kind_by_key.setdefault(key, existing)
+                if key not in kind_by_key:
+                    kind_by_key[key] = existing
+                    existing["keys"].append(key)
             return
 
         kind = {

@@ -10,9 +10,11 @@ copies of the same part (OBJ0002, OBJ0003, OBJ0004 for a 4x side rail).
 Result: only 1 of 4 rails, 1 of 2 legs, 1 of 2 chair backs, etc. ever
 appear in the motion plan, so most parts sit static in the render.
 
-This expands each resolved action across sibling instances, pairing
-instance N of one part with instance N of any other multi-instance part
-in the same action (cycling if group sizes differ). This is a heuristic,
+This expands each resolved action across sibling instances, stepping both
+ends of the action through their sibling groups together (cycling if group
+sizes differ), so the first replica is the action as resolved. Actions
+between two parts of the same kind are not expanded, and replicas never
+duplicate an action already stated for that instance. This is a heuristic,
 not a guaranteed-correct left/right pairing for every product geometry —
 review the expanded output for non-symmetric designs.
 """
@@ -59,10 +61,17 @@ def build_sibling_groups(graph: Dict[str, Any]) -> Dict[str, List[str]]:
 
 
 def paired_uid(ref_uid: str, pair_index: int, groups: Dict[str, List[str]]) -> str:
+    """The sibling `pair_index` places after `ref_uid` in its group, so
+    replica 0 is the action as resolved and the pairing between moving
+    and target instances is kept as the action stated it."""
     group = groups.get(ref_uid)
     if not group or len(group) <= 1:
         return ref_uid
-    return group[pair_index % len(group)]
+    return group[(group.index(ref_uid) + pair_index) % len(group)]
+
+
+def action_key(action: Dict[str, Any]) -> tuple:
+    return (action.get("moving_ref", ""), action.get("target_ref", ""), action.get("action_type", ""))
 
 
 def replicate_actions(graph: Dict[str, Any], resolved: Dict[str, Any]) -> Dict[str, Any]:
@@ -70,6 +79,7 @@ def replicate_actions(graph: Dict[str, Any], resolved: Dict[str, Any]) -> Dict[s
     actions = resolved.get("actions", [])
     expanded: List[Dict[str, Any]] = []
     skipped_self = 0
+    skipped_duplicates = 0
 
     if any(action.get("replicated_from") for action in actions):
         # This stage overwrites its input; running it twice would multiply
@@ -77,15 +87,26 @@ def replicate_actions(graph: Dict[str, Any], resolved: Dict[str, Any]) -> Dict[s
         print("Actions are already replicated; leaving them unchanged.")
         return resolved
 
+    # A replica never repeats an action the manual already states for that
+    # instance (e.g. "leg 2 onto top" shown on its own as well as "leg 1").
+    stated = {action_key(action) for action in actions}
+    seen = set()
+
     for action in actions:
         moving = action.get("moving_ref", "")
         target = action.get("target_ref", "")
 
+        # Two parts of the same kind joined to each other (panel to panel)
+        # are one specific connection; shifting both ends would only turn
+        # it into self-joins or a reversed copy.
+        same_kind = moving in groups and groups.get(moving) is groups.get(target)
+
         repeat_count = 1
-        for ref in (moving, target):
-            group = groups.get(ref)
-            if group:
-                repeat_count = max(repeat_count, len(group))
+        if not same_kind:
+            for ref in (moving, target):
+                group = groups.get(ref)
+                if group:
+                    repeat_count = max(repeat_count, len(group))
 
         for pair_index in range(repeat_count):
             new_action = dict(action)
@@ -96,6 +117,12 @@ def replicate_actions(graph: Dict[str, Any], resolved: Dict[str, Any]) -> Dict[s
             if new_action["moving_ref"] == new_action["target_ref"]:
                 skipped_self += 1
                 continue
+
+            key = action_key(new_action)
+            if key in seen or (pair_index > 0 and key in stated):
+                skipped_duplicates += 1
+                continue
+            seen.add(key)
 
             if repeat_count > 1:
                 new_action["action_uid"] = f"{action.get('action_uid', 'ACT')}_R{pair_index}"
@@ -109,6 +136,7 @@ def replicate_actions(graph: Dict[str, Any], resolved: Dict[str, Any]) -> Dict[s
         "actions_before_replication": len(actions),
         "actions_after_replication": len(expanded),
         "self_pairs_skipped": skipped_self,
+        "duplicates_skipped": skipped_duplicates,
     }
     return resolved
 
@@ -120,9 +148,10 @@ def main():
     output = replicate_actions(graph, resolved)
     save_json(output, OUTPUT_PATH)
 
+    replication = output.get("debug", {}).get("replication", {})
     print(f"Saved replicated actions to {OUTPUT_PATH}")
-    print(f"Actions before replication: {output['debug']['replication']['actions_before_replication']}")
-    print(f"Actions after replication : {output['debug']['replication']['actions_after_replication']}")
+    print(f"Actions before replication: {replication.get('actions_before_replication')}")
+    print(f"Actions after replication : {replication.get('actions_after_replication')}")
 
 
 if __name__ == "__main__":

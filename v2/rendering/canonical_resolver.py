@@ -31,10 +31,18 @@ def norm(value: Any) -> str:
 def build_fastener_lookup(graph: Dict[str, Any], page_states: List[Dict[str, Any]]) -> Dict[str, str]:
     """
     Converts local fastener IDs like F004_003 into canonical IDs like FAST0003.
-    Uses the same key as universal_graph_engine.py: the printed label, or
-    the normalised name for an unlabelled fastener.
+    A fastener is found by its printed label or, failing that, its name, so
+    one labelled on the parts list and unlabelled on a step page (or the
+    other way round) still resolves. A name shared by fasteners with
+    different labels is ambiguous and not used.
     """
-    key_to_fastener = {}
+    key_to_fastener: Dict[str, str] = {}
+    ambiguous = set()
+
+    def register(key: str, uid: str) -> None:
+        if key_to_fastener.get(key, uid) != uid:
+            ambiguous.add(key)
+        key_to_fastener.setdefault(key, uid)
 
     for fastener in graph.get("fasteners", []):
         uid = fastener.get("fastener_uid")
@@ -44,20 +52,30 @@ def build_fastener_lookup(graph: Dict[str, Any], page_states: List[Dict[str, Any
         for label in fastener.get("manual_labels", []):
             label = str(label).strip()
             if label:
-                key_to_fastener[label] = uid
+                register(f"label:{label}", uid)
 
-        if not fastener.get("manual_labels"):
-            key_to_fastener[norm(fastener.get("name"))] = uid
+        name = norm(fastener.get("name"))
+        if name:
+            register(f"name:{name}", uid)
+
+    for key in ambiguous:
+        key_to_fastener.pop(key, None)
 
     local_to_fastener = {}
 
     for page in page_states:
         for fastener in page.get("visible_fasteners", []):
             local_uid = fastener.get("fastener_uid")
-            key = str(fastener.get("manual_label", "")).strip() or norm(fastener.get("name"))
+            if not local_uid:
+                continue
 
-            if local_uid and key in key_to_fastener:
-                local_to_fastener[local_uid] = key_to_fastener[key]
+            label = str(fastener.get("manual_label", "")).strip()
+            name = norm(fastener.get("name"))
+            keys = ([f"label:{label}"] if label else []) + ([f"name:{name}"] if name else [])
+            match = next((key_to_fastener[key] for key in keys if key in key_to_fastener), "")
+
+            if match:
+                local_to_fastener[local_uid] = match
 
     return local_to_fastener
 
@@ -88,6 +106,10 @@ def choose_anchor_part(actions: List[Dict[str, Any]], resolve: Callable[[str], s
     for action in actions:
         moving = resolve(action.get("moving_ref", ""))
         target = resolve(action.get("target_ref", ""))
+        if moving.startswith("ASM"):
+            # The assembly moving onto a part means that part joins the
+            # assembly (see resolve_actions), so the part is a mover.
+            moving, target = target, ""
         if moving.startswith("OBJ"):
             movers.add(moving)
         if target.startswith("OBJ"):
@@ -157,21 +179,25 @@ def resolve_actions(
     actions = actions_json.get("actions", [])
     anchor_part = choose_anchor_part(actions, resolve)
 
-    def resolve_node(ref: str) -> str:
-        uid = resolve(ref)
-        if uid.startswith("ASM") and anchor_part:
-            return anchor_part
-        return uid
-
     resolved_actions = []
     warnings = []
 
     for action in actions:
         action_uid = action.get("action_uid", "")
 
-        moving = resolve_node(action.get("moving_ref", ""))
-        target = resolve_node(action.get("target_ref", ""))
+        moving = resolve(action.get("moving_ref", ""))
+        target = resolve(action.get("target_ref", ""))
         fastener = resolve(action.get("fastener_ref", ""))
+        reversed_from_assembly = False
+
+        if moving.startswith("ASM") and target and not target.startswith("ASM"):
+            # "Assembled frame onto the seat" is the seat joining the
+            # assembly. The assembly node has no geometry of its own, so the
+            # part moves onto the anchor part instead of the anchor moving.
+            moving, target = target, anchor_part or moving
+            reversed_from_assembly = True
+        elif target.startswith("ASM") and anchor_part:
+            target = anchor_part
 
         moving = infer_moving_from_fastener(action, moving, fastener)
 
@@ -198,6 +224,8 @@ def resolve_actions(
 
         new_action["resolved"] = True
         new_action["resolution_source"] = "object_identity_map"
+        if reversed_from_assembly:
+            new_action["reversed_from_assembly"] = True
 
         new_action["warnings"] = action.get("warnings", [])
 

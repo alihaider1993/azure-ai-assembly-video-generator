@@ -6,7 +6,6 @@ from typing import Any, Dict, List, Tuple
 
 
 PAGE_STATES_PATH = Path("v2/outputs/json/page_states.json")
-ASSEMBLY_DELTAS_PATH = Path("v2/outputs/json/assembly_deltas.json")
 OUTPUT_PATH = Path("v2/outputs/json/assembly_actions.json")
 
 
@@ -44,12 +43,42 @@ def action_to_connection_type(action_type: str) -> str:
     return "unknown"
 
 
-def label_in_text(label: str, text: str) -> bool:
+# Words that introduce a short label: "part 2", "fitting A", "no. 3", "#4".
+SHORT_LABEL_PREFIX = r"(?:\b(?:part|item|fitting|fastener|label|number|no\.?)\s*|#\s*)"
+
+
+def label_in_text(label: Any, text: str) -> bool:
+    """Whether `text` refers to the manual label `label`.
+
+    A short label ("A", "2") is also an ordinary word or count ("a rail",
+    "4 dowels"), so it only counts when written as a label: in brackets,
+    after a word like "part" or "fitting", or, for a capital letter, as a
+    capital standing on its own mid-sentence ("insert dowel A")."""
+    label = str(label or "").strip()
     if not label:
         return False
 
-    label = re.escape(str(label).strip())
-    return re.search(rf"\b{label}\b", text, re.IGNORECASE) is not None
+    escaped = re.escape(label)
+
+    if len(label) > 2:
+        return re.search(rf"\b{escaped}\b", text, re.IGNORECASE) is not None
+
+    patterns = [
+        rf"\(\s*{escaped}\s*\)",
+        rf"\[\s*{escaped}\s*\]",
+        rf"{SHORT_LABEL_PREFIX}{escaped}(?!\w)",
+    ]
+    if any(re.search(pattern, text, re.IGNORECASE) for pattern in patterns):
+        return True
+
+    if label.isalpha() and label.isupper():
+        for match in re.finditer(rf"\b{escaped}\b", text):
+            before = text[:match.start()].rstrip()
+            # At the start of a sentence a capital "A" is the article.
+            if before and before[-1] not in ".!?:;":
+                return True
+
+    return False
 
 
 def part_exists(page: Dict[str, Any], ref: str) -> bool:
@@ -345,7 +374,7 @@ def extract_actions(page_states: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     seen_pairs = set()
 
     for page in page_states:
-        page_number = int(page.get("page_number", 0))
+        page_number = int(page.get("page_number") or 0)
 
         if norm(page.get("page_type")) != "assembly_step":
             continue
@@ -442,16 +471,12 @@ def extract_actions(page_states: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
 def build_assembly_actions(
     page_states_path: Path = PAGE_STATES_PATH,
-    assembly_deltas_path: Path = ASSEMBLY_DELTAS_PATH,
     output_path: Path = OUTPUT_PATH,
 ) -> Dict[str, Any]:
     page_states = load_json(page_states_path)
 
     if not isinstance(page_states, list):
         raise ValueError("page_states.json must contain a list.")
-
-    if assembly_deltas_path.exists():
-        _ = load_json(assembly_deltas_path)
 
     actions = extract_actions(page_states)
 

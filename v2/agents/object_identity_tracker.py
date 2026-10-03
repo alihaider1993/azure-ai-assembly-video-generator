@@ -3,7 +3,7 @@ import re
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, Iterable, List, Set, Tuple
 
 
 GRAPH_PATH = Path("v2/outputs/json/universal_assembly_graph.json")
@@ -21,6 +21,14 @@ ASSEMBLY_NAME_KEYWORDS = [
     "assembled structure",
     "frame assembly",
 ]
+
+# A part *named* as something already built ("assembled underframe",
+# "completed table", "sub-assembly") is the assembly, whatever the product.
+# "Pre-assembled" parts come that way in the box and are ordinary parts.
+ASSEMBLY_NAME_RE = re.compile(
+    r"(?<!pre-)\b(?:assembled|completed|finished)\b"
+    r"|\b(?:final|sub-?)\s?assembly\b"
+)
 
 
 def load_json(path: Path) -> Any:
@@ -73,6 +81,36 @@ def identity_keys(label: Any, name: Any) -> List[str]:
     return keys
 
 
+def similar_name_key(name_key: str, known_keys: Iterable[str]) -> str:
+    """The one known "name:" key for the same kind of part named with more
+    or fewer words, e.g. "name:long side rail" for "name:long rail": same
+    last word (the noun), one name's words all in the other, and at least
+    half the words shared. Returns "" if there is none, or more than one
+    equally close ("side rail" vs "long side rail" and "short side rail")."""
+    if not name_key.startswith("name:"):
+        return ""
+    word_list = name_key[len("name:"):].split()
+    if not word_list:
+        return ""
+    words = set(word_list)
+
+    best, best_score, tied = "", 0.0, False
+    for key in known_keys:
+        if not key.startswith("name:") or key == name_key:
+            continue
+        other_list = key[len("name:"):].split()
+        other = set(other_list)
+        if not other_list or other_list[-1] != word_list[-1] or not (words <= other or other <= words):
+            continue
+        score = len(words & other) / len(words | other)
+        if score > best_score:
+            best, best_score, tied = key, score, False
+        elif score == best_score:
+            tied = True
+
+    return "" if tied or best_score < 0.5 else best
+
+
 def local_part_keys(local_part: Dict[str, Any]) -> List[str]:
     return identity_keys(local_part.get("manual_label"), local_part.get("name"))
 
@@ -112,9 +150,19 @@ def find_candidates(
     inventory: Dict[str, List[Dict[str, Any]]],
 ) -> Tuple[str, List[Dict[str, Any]]]:
     """(group key, canonical instances) for a local part, or ("", [])."""
-    for key in local_part_keys(local_part):
+    keys = local_part_keys(local_part)
+
+    for key in keys:
         candidates = inventory.get(key, [])
         if candidates:
+            return canonical_part_keys(candidates[0])[0], candidates
+
+    # The model may name an unlabelled part slightly differently on
+    # different pages ("long rail" / "long side rail").
+    for key in keys:
+        similar = similar_name_key(key, inventory)
+        if similar:
+            candidates = inventory[similar]
             return canonical_part_keys(candidates[0])[0], candidates
 
     return "", []
@@ -137,6 +185,11 @@ def get_primary_assembly_uid(graph: Dict[str, Any]) -> str:
 
 
 def is_assembly_like_part(local_part: Dict[str, Any]) -> bool:
+    if ASSEMBLY_NAME_RE.search(norm(local_part.get("name"))):
+        return True
+
+    # Descriptions mention assembling freely ("rail being assembled onto
+    # the top"), so only the specific phrases count there.
     text = norm(
         " ".join(
             [
@@ -197,27 +250,22 @@ def choose_new_instance(
     local_part: Dict[str, Any],
     group_key: str,
     candidates: List[Dict[str, Any]],
-    used_counts: Dict[str, int],
-) -> str:
-    if not candidates:
-        return ""
+    used_instances: Dict[str, Set[str]],
+) -> Tuple[str, bool]:
+    """(part_uid, is_unused): the most similar instance not yet given to a
+    local part, or, when every instance is taken, the most similar one
+    again with is_unused False."""
+    # sorted() is stable, so equally similar siblings stay in instance order.
+    ordered = sorted(candidates, key=lambda part: similarity_score(local_part, part), reverse=True)
+    used = used_instances[group_key]
 
-    scored: List[Tuple[float, Dict[str, Any]]] = []
+    for part in ordered:
+        uid = part.get("part_uid", "")
+        if uid and uid not in used:
+            used.add(uid)
+            return uid, True
 
-    for part in candidates:
-        scored.append((similarity_score(local_part, part), part))
-
-    scored.sort(key=lambda x: x[0], reverse=True)
-
-    ordered_candidates = [part for _, part in scored]
-    used_index = used_counts[group_key]
-
-    if used_index < len(ordered_candidates):
-        chosen = ordered_candidates[used_index]
-        used_counts[group_key] += 1
-        return chosen.get("part_uid", "")
-
-    return ordered_candidates[0].get("part_uid", "")
+    return (ordered[0].get("part_uid", "") if ordered else ""), False
 
 
 def should_track_page(page: Dict[str, Any]) -> bool:
@@ -262,7 +310,7 @@ def build_identity_map(
     canonical_history: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
 
     active_instances: Dict[str, str] = {}
-    used_counts: Dict[str, int] = defaultdict(int)
+    used_instances: Dict[str, Set[str]] = defaultdict(set)
 
     warnings: List[str] = []
 
@@ -324,13 +372,19 @@ def build_identity_map(
                 if canonical_uid and canonical_uid not in used_on_page:
                     resolution_reason = "reused_active_instance"
                 else:
-                    canonical_uid = choose_new_instance(
+                    canonical_uid, is_unused = choose_new_instance(
                         local_part=local_part,
                         group_key=group_key,
                         candidates=candidates,
-                        used_counts=used_counts,
+                        used_instances=used_instances,
                     )
                     resolution_reason = "new_instance_selected"
+                    if not is_unused:
+                        resolution_reason = "all_instances_used_reused_closest"
+                        warnings.append(
+                            f"Page {page_number}: more {group_key} parts shown than the graph has "
+                            f"({len(candidates)}); mapped {local_uid} to {canonical_uid} again."
+                        )
 
                 if canonical_uid:
                     active_instances[group_key] = canonical_uid
@@ -364,7 +418,7 @@ def build_identity_map(
                 for key, parts in inventory.items()
             },
             "active_instances": active_instances,
-            "used_counts": dict(used_counts),
+            "used_counts": {key: len(uids) for key, uids in used_instances.items()},
         },
         "warnings": warnings,
     }
