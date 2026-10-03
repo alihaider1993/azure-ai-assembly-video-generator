@@ -1,0 +1,590 @@
+[
+  {
+    "page_number": 1,
+    "page_type": "cover",
+    "diagrams": [
+      {
+        "diagram_uid": "D001_001",
+        "diagram_type": "final_product",
+        "description": "Assembled MELLTORP table: rectangular top on four square legs",
+        "page_region": {
+          "x_min": 0.05,
+          "y_min": 0.3,
+          "x_max": 0.95,
+          "y_max": 0.75
+        },
+        "contains_parts": true,
+        "contains_fasteners": false,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": false,
+        "visible_labels": [],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.95
+      }
+    ],
+    "primary_assembly_diagram": "",
+    "warnings": [],
+    "uncertainties": []
+  },
+  {
+    "page_number": 2,
+    "page_type": "warning",
+    "diagrams": [
+      {
+        "diagram_uid": "D002_001",
+        "diagram_type": "warning",
+        "description": "Do not assemble on a hard floor (crossed out); use a soft rug instead",
+        "page_region": {
+          "x_min": 0.06,
+          "y_min": 0.04,
+          "x_max": 0.94,
+          "y_max": 0.24
+        },
+        "contains_parts": false,
+        "contains_fasteners": false,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": false,
+        "visible_labels": [],
+        "likely_action": "warning",
+        "visual_complexity": "low",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D002_002",
+        "diagram_type": "warning",
+        "description": "Confused person with hammer and manual; person phoning IKEA for help",
+        "page_region": {
+          "x_min": 0.06,
+          "y_min": 0.27,
+          "x_max": 0.94,
+          "y_max": 0.47
+        },
+        "contains_parts": false,
+        "contains_fasteners": false,
+        "contains_tools": true,
+        "contains_arrows": false,
+        "contains_labels": false,
+        "visible_labels": [],
+        "likely_action": "warning",
+        "visual_complexity": "low",
+        "confidence": 0.8
+      }
+    ],
+    "primary_assembly_diagram": "",
+    "warnings": [],
+    "uncertainties": [
+      "General safety and help advice."
+    ]
+  },
+  {
+    "page_number": 3,
+    "page_type": "parts_list",
+    "diagrams": [
+      {
+        "diagram_uid": "D003_001",
+        "diagram_type": "part_inventory",
+        "description": "Hex socket screw 8x",
+        "page_region": {
+          "x_min": 0.05,
+          "y_min": 0.05,
+          "x_max": 0.15,
+          "y_max": 0.32
+        },
+        "contains_parts": false,
+        "contains_fasteners": true,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "10051905",
+          "8x"
+        ],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.9
+      },
+      {
+        "diagram_uid": "D003_002",
+        "diagram_type": "part_inventory",
+        "description": "Hex head bolt 4x",
+        "page_region": {
+          "x_min": 0.19,
+          "y_min": 0.11,
+          "x_max": 0.3,
+          "y_max": 0.32
+        },
+        "contains_parts": false,
+        "contains_fasteners": true,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "100469",
+          "131128",
+          "4x"
+        ],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.9
+      },
+      {
+        "diagram_uid": "D003_003",
+        "diagram_type": "part_inventory",
+        "description": "Folded metal corner bracket with centre hole 4x",
+        "page_region": {
+          "x_min": 0.35,
+          "y_min": 0.14,
+          "x_max": 0.58,
+          "y_max": 0.32
+        },
+        "contains_parts": true,
+        "contains_fasteners": false,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "131337",
+          "4x"
+        ],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.85
+      },
+      {
+        "diagram_uid": "D003_004",
+        "diagram_type": "part_inventory",
+        "description": "Spring washer 4x",
+        "page_region": {
+          "x_min": 0.62,
+          "y_min": 0.22,
+          "x_max": 0.75,
+          "y_max": 0.32
+        },
+        "contains_parts": false,
+        "contains_fasteners": true,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "100843",
+          "4x"
+        ],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.9
+      },
+      {
+        "diagram_uid": "D003_005",
+        "diagram_type": "part_inventory",
+        "description": "Plastic plug 8x",
+        "page_region": {
+          "x_min": 0.82,
+          "y_min": 0.21,
+          "x_max": 0.94,
+          "y_max": 0.32
+        },
+        "contains_parts": false,
+        "contains_fasteners": true,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "190015",
+          "8x"
+        ],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.85
+      },
+      {
+        "diagram_uid": "D003_006",
+        "diagram_type": "part_inventory",
+        "description": "Combination spanner 1x",
+        "page_region": {
+          "x_min": 0.05,
+          "y_min": 0.37,
+          "x_max": 0.73,
+          "y_max": 0.59
+        },
+        "contains_parts": false,
+        "contains_fasteners": false,
+        "contains_tools": true,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "128632",
+          "1x"
+        ],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.9
+      },
+      {
+        "diagram_uid": "D003_007",
+        "diagram_type": "part_inventory",
+        "description": "Allen key 1x",
+        "page_region": {
+          "x_min": 0.78,
+          "y_min": 0.42,
+          "x_max": 0.94,
+          "y_max": 0.59
+        },
+        "contains_parts": false,
+        "contains_fasteners": false,
+        "contains_tools": true,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "100001",
+          "1x"
+        ],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.9
+      }
+    ],
+    "primary_assembly_diagram": "",
+    "warnings": [],
+    "uncertainties": []
+  },
+  {
+    "page_number": 4,
+    "page_type": "assembly_step",
+    "diagrams": [
+      {
+        "diagram_uid": "D004_001",
+        "diagram_type": "exploded_view",
+        "description": "Two long rails above the upside-down tabletop with screws above and plastic plugs below each rail hole",
+        "page_region": {
+          "x_min": 0.05,
+          "y_min": 0.57,
+          "x_max": 0.94,
+          "y_max": 0.9
+        },
+        "contains_parts": true,
+        "contains_fasteners": true,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "1"
+        ],
+        "likely_action": "attach",
+        "visual_complexity": "high",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D004_002",
+        "diagram_type": "close_up",
+        "description": "Screw 10051905 driven with allen key 100001 through the rail; plug 190015 under the rail",
+        "page_region": {
+          "x_min": 0.64,
+          "y_min": 0.04,
+          "x_max": 0.94,
+          "y_max": 0.55
+        },
+        "contains_parts": true,
+        "contains_fasteners": true,
+        "contains_tools": true,
+        "contains_arrows": true,
+        "contains_labels": true,
+        "visible_labels": [
+          "8x",
+          "100001",
+          "10051905",
+          "190015"
+        ],
+        "likely_action": "tighten",
+        "visual_complexity": "medium",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D004_003",
+        "diagram_type": "close_up",
+        "description": "Rail end profile showing the slotted open end",
+        "page_region": {
+          "x_min": 0.08,
+          "y_min": 0.81,
+          "x_max": 0.26,
+          "y_max": 0.91
+        },
+        "contains_parts": true,
+        "contains_fasteners": false,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": false,
+        "visible_labels": [],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.7
+      }
+    ],
+    "primary_assembly_diagram": "D004_001",
+    "warnings": [],
+    "uncertainties": []
+  },
+  {
+    "page_number": 5,
+    "page_type": "assembly_step",
+    "diagrams": [
+      {
+        "diagram_uid": "D005_001",
+        "diagram_type": "assembly_view",
+        "description": "Step 2: corner brackets placed at the four ends of the long rails on the tabletop",
+        "page_region": {
+          "x_min": 0.05,
+          "y_min": 0.18,
+          "x_max": 0.93,
+          "y_max": 0.42
+        },
+        "contains_parts": true,
+        "contains_fasteners": false,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "2"
+        ],
+        "likely_action": "insert",
+        "visual_complexity": "medium",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D005_002",
+        "diagram_type": "close_up",
+        "description": "Bracket 131337 pushed into the rail end (arrow)",
+        "page_region": {
+          "x_min": 0.66,
+          "y_min": 0.04,
+          "x_max": 0.9,
+          "y_max": 0.18
+        },
+        "contains_parts": true,
+        "contains_fasteners": false,
+        "contains_tools": false,
+        "contains_arrows": true,
+        "contains_labels": true,
+        "visible_labels": [
+          "4x",
+          "131337"
+        ],
+        "likely_action": "insert",
+        "visual_complexity": "medium",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D005_003",
+        "diagram_type": "assembly_view",
+        "description": "Step 3: short rails pushed between the long rail ends (arrows)",
+        "page_region": {
+          "x_min": 0.05,
+          "y_min": 0.66,
+          "x_max": 0.94,
+          "y_max": 0.92
+        },
+        "contains_parts": true,
+        "contains_fasteners": false,
+        "contains_tools": false,
+        "contains_arrows": true,
+        "contains_labels": true,
+        "visible_labels": [
+          "3"
+        ],
+        "likely_action": "slide",
+        "visual_complexity": "medium",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D005_004",
+        "diagram_type": "close_up",
+        "description": "Bracket turned to hook into the short rail end (curved arrow)",
+        "page_region": {
+          "x_min": 0.48,
+          "y_min": 0.5,
+          "x_max": 0.7,
+          "y_max": 0.65
+        },
+        "contains_parts": true,
+        "contains_fasteners": false,
+        "contains_tools": false,
+        "contains_arrows": true,
+        "contains_labels": true,
+        "visible_labels": [
+          "4x"
+        ],
+        "likely_action": "rotate",
+        "visual_complexity": "medium",
+        "confidence": 0.8
+      }
+    ],
+    "primary_assembly_diagram": "D005_001",
+    "warnings": [],
+    "uncertainties": [
+      "Two steps on one page."
+    ]
+  },
+  {
+    "page_number": 6,
+    "page_type": "assembly_step",
+    "diagrams": [
+      {
+        "diagram_uid": "D006_001",
+        "diagram_type": "assembly_view",
+        "description": "Four legs placed upright into the corners of the upside-down rail frame",
+        "page_region": {
+          "x_min": 0.1,
+          "y_min": 0.43,
+          "x_max": 0.75,
+          "y_max": 0.81
+        },
+        "contains_parts": true,
+        "contains_fasteners": true,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "4"
+        ],
+        "likely_action": "attach",
+        "visual_complexity": "high",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D006_002",
+        "diagram_type": "close_up",
+        "description": "Bolt 100469 with spring washer 100843 through the corner bracket into the leg; spanner 128632",
+        "page_region": {
+          "x_min": 0.4,
+          "y_min": 0.12,
+          "x_max": 0.94,
+          "y_max": 0.4
+        },
+        "contains_parts": true,
+        "contains_fasteners": true,
+        "contains_tools": true,
+        "contains_arrows": true,
+        "contains_labels": true,
+        "visible_labels": [
+          "4x",
+          "100843",
+          "100469",
+          "131128",
+          "128632"
+        ],
+        "likely_action": "tighten",
+        "visual_complexity": "medium",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D006_003",
+        "diagram_type": "warning",
+        "description": "Washer under bolt head correct vs crossed-out wrong fit",
+        "page_region": {
+          "x_min": 0.06,
+          "y_min": 0.29,
+          "x_max": 0.35,
+          "y_max": 0.4
+        },
+        "contains_parts": false,
+        "contains_fasteners": true,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": false,
+        "visible_labels": [],
+        "likely_action": "warning",
+        "visual_complexity": "low",
+        "confidence": 0.8
+      }
+    ],
+    "primary_assembly_diagram": "D006_001",
+    "warnings": [],
+    "uncertainties": []
+  },
+  {
+    "page_number": 7,
+    "page_type": "assembly_step",
+    "diagrams": [
+      {
+        "diagram_uid": "D007_001",
+        "diagram_type": "assembly_view",
+        "description": "Underframe with four legs bolted at the corners",
+        "page_region": {
+          "x_min": 0.18,
+          "y_min": 0.34,
+          "x_max": 0.78,
+          "y_max": 0.69
+        },
+        "contains_parts": true,
+        "contains_fasteners": true,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "5"
+        ],
+        "likely_action": "tighten",
+        "visual_complexity": "medium",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D007_002",
+        "diagram_type": "close_up",
+        "description": "Bolt in corner bracket tightened with spanner 128632",
+        "page_region": {
+          "x_min": 0.39,
+          "y_min": 0.04,
+          "x_max": 0.94,
+          "y_max": 0.31
+        },
+        "contains_parts": true,
+        "contains_fasteners": true,
+        "contains_tools": true,
+        "contains_arrows": true,
+        "contains_labels": true,
+        "visible_labels": [
+          "4x",
+          "128632"
+        ],
+        "likely_action": "tighten",
+        "visual_complexity": "medium",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D007_003",
+        "diagram_type": "warning",
+        "description": "Info: spanner crossed out over a waste bin",
+        "page_region": {
+          "x_min": 0.51,
+          "y_min": 0.72,
+          "x_max": 0.94,
+          "y_max": 0.92
+        },
+        "contains_parts": false,
+        "contains_fasteners": false,
+        "contains_tools": true,
+        "contains_arrows": true,
+        "contains_labels": false,
+        "visible_labels": [],
+        "likely_action": "warning",
+        "visual_complexity": "low",
+        "confidence": 0.6
+      }
+    ],
+    "primary_assembly_diagram": "D007_001",
+    "warnings": [],
+    "uncertainties": []
+  },
+  {
+    "page_number": 8,
+    "page_type": "unknown",
+    "diagrams": [],
+    "primary_assembly_diagram": "",
+    "warnings": [],
+    "uncertainties": [
+      "Back page: copyright and date only."
+    ]
+  }
+]

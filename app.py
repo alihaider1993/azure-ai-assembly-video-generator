@@ -127,7 +127,16 @@ def run_live_command(cmd, log_box, progress_bar, status_area, current_step):
     return_code = process.wait()
 
     if return_code != 0:
-        raise RuntimeError(f"Command failed: {' '.join(cmd)}")
+        # Stages print "[FATAL] ..." / "[PIPELINE FAILED] ..." with the actual cause
+        # (e.g. missing AZURE_OPENAI_ENDPOINT); show that instead of just the command.
+        reasons = [
+            line for line in logs
+            if line.startswith(("[FATAL]", "[PIPELINE FAILED]"))
+        ]
+        details = "\n\n".join(reasons) if reasons else "\n".join(logs[-15:])
+        raise RuntimeError(
+            f"Command failed: {' '.join(cmd)}\n\n{details}"
+        )
 
     return current_step
 

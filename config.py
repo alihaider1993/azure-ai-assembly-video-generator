@@ -71,6 +71,10 @@ DIAGRAM_ANALYSIS_JSON = V2_JSON_DIR / "diagram_analysis.json"
 
 GEOMETRY_SPEC_JSON = V2_JSON_DIR / "geometry_spec.json"
 
+# Frame timing and captions of the rendered video (blender_builder_v3.py
+# writes it, render_video.py draws the captions from it)
+RENDER_TIMELINE_JSON = V2_JSON_DIR / "render_timeline.json"
+
 # Intermediate Files
 
 PART_SHAPES_JSON = V2_OUTPUT_DIR / "part_shapes.json"

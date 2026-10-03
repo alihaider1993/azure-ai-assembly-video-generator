@@ -6,10 +6,14 @@ from typing import Any, Dict, List, Tuple
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from services.foundry import FoundryClient
+from services.foundry import FoundryClient, FoundryConfigError
 
 
 OUTPUT_PATH = Path("v2/outputs/json/page_states.json")
+
+
+class PageStateAnalysisError(RuntimeError):
+    """Page analysis produced nothing usable, so later stages would run on empty data."""
 
 
 def extract_json(text: str) -> Dict[str, Any]:
@@ -37,6 +41,16 @@ def ensure_list(value: Any) -> List[Any]:
     return value if isinstance(value, list) else []
 
 
+def ensure_dict_list(value: Any) -> List[Dict[str, Any]]:
+    return [item for item in ensure_list(value) if isinstance(item, dict)]
+
+
+def to_int(value: Any, default: int = 1) -> int:
+    """Parse model-supplied counts such as 4, "4", "4x" or "x4"."""
+    match = re.search(r"\d+", str(value or ""))
+    return int(match.group()) if match else default
+
+
 def make_aliases(item: Dict[str, Any], keys: List[str]) -> List[str]:
     aliases = []
 
@@ -60,10 +74,10 @@ def remap_ref(ref: str, alias_map: Dict[str, str]) -> str:
 def generate_stable_ids(state: Dict[str, Any]) -> Tuple[Dict[str, Any], Dict[str, int]]:
     page_number = int(state.get("page_number", 0))
 
-    visible_parts = ensure_list(state.get("visible_parts"))
-    visible_fasteners = ensure_list(state.get("visible_fasteners"))
-    visible_tools = ensure_list(state.get("visible_tools"))
-    observed_actions = ensure_list(state.get("observed_actions"))
+    visible_parts = ensure_dict_list(state.get("visible_parts"))
+    visible_fasteners = ensure_dict_list(state.get("visible_fasteners"))
+    visible_tools = ensure_dict_list(state.get("visible_tools"))
+    observed_actions = ensure_dict_list(state.get("observed_actions"))
 
     part_alias_map: Dict[str, str] = {}
     fastener_alias_map: Dict[str, str] = {}
@@ -83,8 +97,12 @@ def generate_stable_ids(state: Dict[str, Any]) -> Tuple[Dict[str, Any], Dict[str
             part_alias_map[norm(old_uid)] = stable_uid
 
         part["part_uid"] = stable_uid
-        part["quantity_visible"] = int(part.get("quantity_visible", 1) or 1)
-        part["connection_features"] = ensure_list(part.get("connection_features"))
+        part["quantity_visible"] = to_int(part.get("quantity_visible"))
+        part["connection_features"] = ensure_dict_list(part.get("connection_features"))
+
+        for feature in part["connection_features"]:
+            feature["count"] = to_int(feature.get("count"))
+
         part.setdefault("manual_label", "")
         part.setdefault("name", "")
         part.setdefault("visual_description", "")
@@ -106,7 +124,7 @@ def generate_stable_ids(state: Dict[str, Any]) -> Tuple[Dict[str, Any], Dict[str
             fastener_alias_map[norm(old_uid)] = stable_uid
 
         fastener["fastener_uid"] = stable_uid
-        fastener["quantity_visible"] = int(fastener.get("quantity_visible", 1) or 1)
+        fastener["quantity_visible"] = to_int(fastener.get("quantity_visible"))
         fastener.setdefault("manual_label", "")
         fastener.setdefault("name", "")
         fastener.setdefault("shape_family", "unknown")
@@ -193,13 +211,15 @@ def validate_page_state(state: Dict[str, Any]) -> Tuple[Dict[str, Any], Dict[str
             else:
                 state[key] = "unknown"
 
-    state["visible_parts"] = ensure_list(state.get("visible_parts"))
-    state["visible_fasteners"] = ensure_list(state.get("visible_fasteners"))
-    state["visible_tools"] = ensure_list(state.get("visible_tools"))
-    state["observed_actions"] = ensure_list(state.get("observed_actions"))
+    state["visible_parts"] = ensure_dict_list(state.get("visible_parts"))
+    state["visible_fasteners"] = ensure_dict_list(state.get("visible_fasteners"))
+    state["visible_tools"] = ensure_dict_list(state.get("visible_tools"))
+    state["observed_actions"] = ensure_dict_list(state.get("observed_actions"))
     state["uncertainties"] = ensure_list(state.get("uncertainties"))
 
-    page_type = norm(state.get("page_type"))
+    # Downstream stages compare page_type with ==, so store the normalised value.
+    page_type = norm(state.get("page_type")) or "unknown"
+    state["page_type"] = page_type
 
     if page_type == "cover":
         state["visible_parts"] = []
@@ -234,7 +254,9 @@ class PageStateAgent:
     def __init__(self):
         self.ai = FoundryClient()
 
-    def analyze_page(self, image_path: str, page_number: int) -> Dict[str, Any]:
+    def analyze_page(
+        self, image_path: str, page_number: int
+    ) -> Tuple[Dict[str, Any], Dict[str, int]]:
         prompt = f"""
 You are a Page State Analyzer for a universal assembly manual video generator.
 
@@ -346,8 +368,9 @@ Rules:
 
         raw = self.ai.vision(image_path=image_path, prompt=prompt)
         state = extract_json(raw)
-        state, _ = validate_page_state(state)
-        return state
+        # The page number comes from the file name; the model's value is not trusted.
+        state["page_number"] = page_number
+        return validate_page_state(state)
 
 
 def run_page_state_analysis(
@@ -365,6 +388,7 @@ def run_page_state_analysis(
         raise FileNotFoundError(f"No page images found in {pages_dir}")
 
     results = []
+    failed_pages: List[int] = []
     total_unresolved_refs = 0
 
     for page in pages:
@@ -372,12 +396,14 @@ def run_page_state_analysis(
         print(f"V2 analyzing page {page_number}: {page}")
 
         try:
-            result = agent.analyze_page(str(page), page_number)
-            result, stats = validate_page_state(result)
+            result, stats = agent.analyze_page(str(page), page_number)
             total_unresolved_refs += stats["unresolved_refs"]
             results.append(result)
+        except FoundryConfigError:
+            raise
         except Exception as e:
             print(f"ERROR analyzing page {page_number}: {e}")
+            failed_pages.append(page_number)
             results.append({
                 "page_number": page_number,
                 "page_type": "unknown",
@@ -405,8 +431,26 @@ def run_page_state_analysis(
     print(f"Assembly pages with empty actions: {empty_action_pages}")
     print(f"Unresolved action references: {total_unresolved_refs}")
 
+    if len(failed_pages) == len(results):
+        raise PageStateAnalysisError(
+            f"Every page failed to analyze (pages {failed_pages}). "
+            f"See the ERROR lines above; partial output is in {output_path}."
+        )
+
+    total_actions = sum(len(p.get("observed_actions", [])) for p in results)
+
+    if total_actions == 0:
+        raise PageStateAnalysisError(
+            "No assembly actions were found on any page, so there is nothing to "
+            f"animate. Check the manual pages and {output_path}."
+        )
+
     return results
 
 
 if __name__ == "__main__":
-    run_page_state_analysis()
+    try:
+        run_page_state_analysis()
+    except (FoundryConfigError, PageStateAnalysisError) as e:
+        print(f"\n[FATAL] Manual understanding stopped: {e}", file=sys.stderr)
+        sys.exit(2)

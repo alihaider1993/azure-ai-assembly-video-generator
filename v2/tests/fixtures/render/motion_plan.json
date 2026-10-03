@@ -1,0 +1,261 @@
+{
+  "schema_version": "2.2",
+  "fps": 24,
+  "fast_mvp_mode": true,
+  "frame_gap": 6,
+  "duration_profile": {
+    "rotate": 36,
+    "slide": 30,
+    "lower": 30,
+    "arc": 36,
+    "linear": 24
+  },
+  "total_frames": 325,
+  "steps": [
+    {
+      "step_uid": "M0001",
+      "source_page": 4,
+      "title": "Screwed: Long side rail 1/2 to Tabletop",
+      "action_type": "insert_and_rotate",
+      "moving_nodes": [
+        "OBJ0002",
+        "FAST0001"
+      ],
+      "target_nodes": [
+        "OBJ0001"
+      ],
+      "connection_refs": [
+        "C0001"
+      ],
+      "start_pose": {
+        "position": "exploded",
+        "orientation": "default"
+      },
+      "end_pose": {
+        "position": "assembled",
+        "orientation": "aligned"
+      },
+      "motion_style": "rotate",
+      "camera": "close_up",
+      "start_frame": 1,
+      "end_frame": 37,
+      "duration_frames": 36,
+      "narration": "Insert and tighten Long side rail 1/2 into Tabletop.",
+      "visual_evidence": "page 4 diagram"
+    },
+    {
+      "step_uid": "M0002",
+      "source_page": 4,
+      "title": "Screwed: Long side rail 2/2 to Tabletop",
+      "action_type": "insert_and_rotate",
+      "moving_nodes": [
+        "OBJ0003"
+      ],
+      "target_nodes": [
+        "OBJ0001"
+      ],
+      "connection_refs": [
+        "C0002"
+      ],
+      "start_pose": {
+        "position": "exploded",
+        "orientation": "default"
+      },
+      "end_pose": {
+        "position": "assembled",
+        "orientation": "aligned"
+      },
+      "motion_style": "rotate",
+      "camera": "close_up",
+      "start_frame": 43,
+      "end_frame": 79,
+      "duration_frames": 36,
+      "narration": "Insert and tighten Long side rail 2/2 into Tabletop.",
+      "visual_evidence": "page 4 diagram"
+    },
+    {
+      "step_uid": "M0003",
+      "source_page": 5,
+      "title": "Inserted: Short end rail 1/2 to Long side rail 1/2",
+      "action_type": "insert",
+      "moving_nodes": [
+        "OBJ0004",
+        "FAST0002"
+      ],
+      "target_nodes": [
+        "OBJ0002"
+      ],
+      "connection_refs": [
+        "C0003"
+      ],
+      "start_pose": {
+        "position": "exploded",
+        "orientation": "default"
+      },
+      "end_pose": {
+        "position": "assembled",
+        "orientation": "aligned"
+      },
+      "motion_style": "slide",
+      "camera": "side",
+      "start_frame": 85,
+      "end_frame": 115,
+      "duration_frames": 30,
+      "narration": "Slide Short end rail 1/2 into Long side rail 1/2.",
+      "visual_evidence": "page 5 diagram"
+    },
+    {
+      "step_uid": "M0004",
+      "source_page": 5,
+      "title": "Inserted: Short end rail 2/2 to Long side rail 2/2",
+      "action_type": "insert",
+      "moving_nodes": [
+        "OBJ0005"
+      ],
+      "target_nodes": [
+        "OBJ0003"
+      ],
+      "connection_refs": [
+        "C0004"
+      ],
+      "start_pose": {
+        "position": "exploded",
+        "orientation": "default"
+      },
+      "end_pose": {
+        "position": "assembled",
+        "orientation": "aligned"
+      },
+      "motion_style": "slide",
+      "camera": "side",
+      "start_frame": 121,
+      "end_frame": 151,
+      "duration_frames": 30,
+      "narration": "Slide Short end rail 2/2 into Long side rail 2/2.",
+      "visual_evidence": "page 5 diagram"
+    },
+    {
+      "step_uid": "M0005",
+      "source_page": 6,
+      "title": "Bolted: Leg 1/4 to Tabletop",
+      "action_type": "insert_and_rotate",
+      "moving_nodes": [
+        "OBJ0006",
+        "FAST0003",
+        "FAST0004"
+      ],
+      "target_nodes": [
+        "OBJ0001"
+      ],
+      "connection_refs": [
+        "C0005"
+      ],
+      "start_pose": {
+        "position": "exploded",
+        "orientation": "default"
+      },
+      "end_pose": {
+        "position": "assembled",
+        "orientation": "aligned"
+      },
+      "motion_style": "rotate",
+      "camera": "close_up",
+      "start_frame": 157,
+      "end_frame": 193,
+      "duration_frames": 36,
+      "narration": "Insert and tighten Leg 1/4 into Tabletop.",
+      "visual_evidence": "page 6 diagram"
+    },
+    {
+      "step_uid": "M0006",
+      "source_page": 6,
+      "title": "Bolted: Leg 2/4 to Tabletop",
+      "action_type": "insert_and_rotate",
+      "moving_nodes": [
+        "OBJ0007"
+      ],
+      "target_nodes": [
+        "OBJ0001"
+      ],
+      "connection_refs": [
+        "C0006"
+      ],
+      "start_pose": {
+        "position": "exploded",
+        "orientation": "default"
+      },
+      "end_pose": {
+        "position": "assembled",
+        "orientation": "aligned"
+      },
+      "motion_style": "rotate",
+      "camera": "close_up",
+      "start_frame": 199,
+      "end_frame": 235,
+      "duration_frames": 36,
+      "narration": "Insert and tighten Leg 2/4 into Tabletop.",
+      "visual_evidence": "page 6 diagram"
+    },
+    {
+      "step_uid": "M0007",
+      "source_page": 6,
+      "title": "Bolted: Leg 3/4 to Tabletop",
+      "action_type": "insert_and_rotate",
+      "moving_nodes": [
+        "OBJ0008"
+      ],
+      "target_nodes": [
+        "OBJ0001"
+      ],
+      "connection_refs": [
+        "C0007"
+      ],
+      "start_pose": {
+        "position": "exploded",
+        "orientation": "default"
+      },
+      "end_pose": {
+        "position": "assembled",
+        "orientation": "aligned"
+      },
+      "motion_style": "rotate",
+      "camera": "close_up",
+      "start_frame": 241,
+      "end_frame": 277,
+      "duration_frames": 36,
+      "narration": "Insert and tighten Leg 3/4 into Tabletop.",
+      "visual_evidence": "page 6 diagram"
+    },
+    {
+      "step_uid": "M0008",
+      "source_page": 6,
+      "title": "Bolted: Leg 4/4 to Tabletop",
+      "action_type": "insert_and_rotate",
+      "moving_nodes": [
+        "OBJ0009"
+      ],
+      "target_nodes": [
+        "OBJ0001"
+      ],
+      "connection_refs": [
+        "C0008"
+      ],
+      "start_pose": {
+        "position": "exploded",
+        "orientation": "default"
+      },
+      "end_pose": {
+        "position": "assembled",
+        "orientation": "aligned"
+      },
+      "motion_style": "rotate",
+      "camera": "close_up",
+      "start_frame": 283,
+      "end_frame": 319,
+      "duration_frames": 36,
+      "narration": "Insert and tighten Leg 4/4 into Tabletop.",
+      "visual_evidence": "page 6 diagram"
+    }
+  ],
+  "warnings": []
+}

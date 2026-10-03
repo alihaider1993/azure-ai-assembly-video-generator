@@ -1,0 +1,103 @@
+[
+  {
+    "page_number": 4,
+    "page_type": "parts_list",
+    "diagrams": [
+      {
+        "diagram_uid": "D004_001",
+        "diagram_type": "part_inventory",
+        "description": "Tabletop (1250 x 750mm) x1",
+        "page_region": {
+          "x_min": 0,
+          "y_min": 0,
+          "x_max": 1,
+          "y_max": 1
+        },
+        "contains_parts": true,
+        "contains_fasteners": false,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "1",
+          "1x"
+        ],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D004_002",
+        "diagram_type": "part_inventory",
+        "description": "Long side rail (1100 x 60mm) x2",
+        "page_region": {
+          "x_min": 0,
+          "y_min": 0,
+          "x_max": 1,
+          "y_max": 1
+        },
+        "contains_parts": true,
+        "contains_fasteners": false,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "2",
+          "2x"
+        ],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D004_003",
+        "diagram_type": "part_inventory",
+        "description": "Short end rail (620 x 60mm) x2",
+        "page_region": {
+          "x_min": 0,
+          "y_min": 0,
+          "x_max": 1,
+          "y_max": 1
+        },
+        "contains_parts": true,
+        "contains_fasteners": false,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "3",
+          "2x"
+        ],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.8
+      },
+      {
+        "diagram_uid": "D004_004",
+        "diagram_type": "part_inventory",
+        "description": "Leg (710 x 50mm) x4",
+        "page_region": {
+          "x_min": 0,
+          "y_min": 0,
+          "x_max": 1,
+          "y_max": 1
+        },
+        "contains_parts": true,
+        "contains_fasteners": false,
+        "contains_tools": false,
+        "contains_arrows": false,
+        "contains_labels": true,
+        "visible_labels": [
+          "4",
+          "4x"
+        ],
+        "likely_action": "none",
+        "visual_complexity": "low",
+        "confidence": 0.8
+      }
+    ],
+    "primary_assembly_diagram": "",
+    "warnings": [],
+    "uncertainties": []
+  }
+]
