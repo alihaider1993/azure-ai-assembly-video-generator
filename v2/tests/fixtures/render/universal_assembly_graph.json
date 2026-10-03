@@ -1,0 +1,584 @@
+{
+  "graph_id": "assembly_graph_v2_001",
+  "schema_version": "2.4",
+  "product_hint": {
+    "name": "MELLTORP table underframe",
+    "category": "table",
+    "confidence": 0.65
+  },
+  "parts": [
+    {
+      "part_uid": "OBJ0001",
+      "manual_labels": [
+        "1"
+      ],
+      "canonical_name": "Tabletop",
+      "base_name": "Tabletop",
+      "instance_index": 1,
+      "instance_count": 1,
+      "shape_family": "panel",
+      "material_hint": "wood",
+      "quantity_total": 1,
+      "inventory_quantity_total": 1,
+      "geometry_intent": {
+        "primitive": "cuboid",
+        "is_composite": false,
+        "subparts": []
+      },
+      "connection_features": [
+        {
+          "feature_type": "hole",
+          "count": 4,
+          "location_hint": "underside corners"
+        }
+      ],
+      "first_seen_page": 4,
+      "last_seen_page": 6,
+      "confidence": 0.78,
+      "observations": [
+        {
+          "page_number": 4,
+          "local_part_uid": "P4_1",
+          "visual_description": "Tabletop",
+          "page_position": "center"
+        }
+      ]
+    },
+    {
+      "part_uid": "OBJ0002",
+      "manual_labels": [
+        "2"
+      ],
+      "canonical_name": "Long side rail 1/2",
+      "base_name": "Long side rail",
+      "instance_index": 1,
+      "instance_count": 2,
+      "shape_family": "frame",
+      "material_hint": "metal",
+      "quantity_total": 1,
+      "inventory_quantity_total": 2,
+      "geometry_intent": {
+        "primitive": "cuboid",
+        "is_composite": false,
+        "subparts": []
+      },
+      "connection_features": [
+        {
+          "feature_type": "hole",
+          "count": 2,
+          "location_hint": "ends"
+        }
+      ],
+      "first_seen_page": 4,
+      "last_seen_page": 6,
+      "confidence": 0.78,
+      "observations": [
+        {
+          "page_number": 4,
+          "local_part_uid": "P4_2",
+          "visual_description": "Long side rail",
+          "page_position": "center"
+        }
+      ]
+    },
+    {
+      "part_uid": "OBJ0003",
+      "manual_labels": [
+        "2"
+      ],
+      "canonical_name": "Long side rail 2/2",
+      "base_name": "Long side rail",
+      "instance_index": 2,
+      "instance_count": 2,
+      "shape_family": "frame",
+      "material_hint": "metal",
+      "quantity_total": 1,
+      "inventory_quantity_total": 2,
+      "geometry_intent": {
+        "primitive": "cuboid",
+        "is_composite": false,
+        "subparts": []
+      },
+      "connection_features": [
+        {
+          "feature_type": "hole",
+          "count": 2,
+          "location_hint": "ends"
+        }
+      ],
+      "first_seen_page": 4,
+      "last_seen_page": 6,
+      "confidence": 0.78,
+      "observations": [
+        {
+          "page_number": 4,
+          "local_part_uid": "P4_2",
+          "visual_description": "Long side rail",
+          "page_position": "center"
+        }
+      ]
+    },
+    {
+      "part_uid": "OBJ0004",
+      "manual_labels": [
+        "3"
+      ],
+      "canonical_name": "Short end rail 1/2",
+      "base_name": "Short end rail",
+      "instance_index": 1,
+      "instance_count": 2,
+      "shape_family": "frame",
+      "material_hint": "metal",
+      "quantity_total": 1,
+      "inventory_quantity_total": 2,
+      "geometry_intent": {
+        "primitive": "cuboid",
+        "is_composite": false,
+        "subparts": []
+      },
+      "connection_features": [
+        {
+          "feature_type": "hole",
+          "count": 2,
+          "location_hint": "ends"
+        }
+      ],
+      "first_seen_page": 4,
+      "last_seen_page": 6,
+      "confidence": 0.78,
+      "observations": [
+        {
+          "page_number": 4,
+          "local_part_uid": "P4_3",
+          "visual_description": "Short end rail",
+          "page_position": "center"
+        }
+      ]
+    },
+    {
+      "part_uid": "OBJ0005",
+      "manual_labels": [
+        "3"
+      ],
+      "canonical_name": "Short end rail 2/2",
+      "base_name": "Short end rail",
+      "instance_index": 2,
+      "instance_count": 2,
+      "shape_family": "frame",
+      "material_hint": "metal",
+      "quantity_total": 1,
+      "inventory_quantity_total": 2,
+      "geometry_intent": {
+        "primitive": "cuboid",
+        "is_composite": false,
+        "subparts": []
+      },
+      "connection_features": [
+        {
+          "feature_type": "hole",
+          "count": 2,
+          "location_hint": "ends"
+        }
+      ],
+      "first_seen_page": 4,
+      "last_seen_page": 6,
+      "confidence": 0.78,
+      "observations": [
+        {
+          "page_number": 4,
+          "local_part_uid": "P4_3",
+          "visual_description": "Short end rail",
+          "page_position": "center"
+        }
+      ]
+    },
+    {
+      "part_uid": "OBJ0006",
+      "manual_labels": [
+        "4"
+      ],
+      "canonical_name": "Leg 1/4",
+      "base_name": "Leg",
+      "instance_index": 1,
+      "instance_count": 4,
+      "shape_family": "beam",
+      "material_hint": "metal",
+      "quantity_total": 1,
+      "inventory_quantity_total": 4,
+      "geometry_intent": {
+        "primitive": "cuboid",
+        "is_composite": false,
+        "subparts": []
+      },
+      "connection_features": [
+        {
+          "feature_type": "hole",
+          "count": 2,
+          "location_hint": "ends"
+        }
+      ],
+      "first_seen_page": 4,
+      "last_seen_page": 6,
+      "confidence": 0.78,
+      "observations": [
+        {
+          "page_number": 4,
+          "local_part_uid": "P4_4",
+          "visual_description": "Leg",
+          "page_position": "center"
+        }
+      ]
+    },
+    {
+      "part_uid": "OBJ0007",
+      "manual_labels": [
+        "4"
+      ],
+      "canonical_name": "Leg 2/4",
+      "base_name": "Leg",
+      "instance_index": 2,
+      "instance_count": 4,
+      "shape_family": "beam",
+      "material_hint": "metal",
+      "quantity_total": 1,
+      "inventory_quantity_total": 4,
+      "geometry_intent": {
+        "primitive": "cuboid",
+        "is_composite": false,
+        "subparts": []
+      },
+      "connection_features": [
+        {
+          "feature_type": "hole",
+          "count": 2,
+          "location_hint": "ends"
+        }
+      ],
+      "first_seen_page": 4,
+      "last_seen_page": 6,
+      "confidence": 0.78,
+      "observations": [
+        {
+          "page_number": 4,
+          "local_part_uid": "P4_4",
+          "visual_description": "Leg",
+          "page_position": "center"
+        }
+      ]
+    },
+    {
+      "part_uid": "OBJ0008",
+      "manual_labels": [
+        "4"
+      ],
+      "canonical_name": "Leg 3/4",
+      "base_name": "Leg",
+      "instance_index": 3,
+      "instance_count": 4,
+      "shape_family": "beam",
+      "material_hint": "metal",
+      "quantity_total": 1,
+      "inventory_quantity_total": 4,
+      "geometry_intent": {
+        "primitive": "cuboid",
+        "is_composite": false,
+        "subparts": []
+      },
+      "connection_features": [
+        {
+          "feature_type": "hole",
+          "count": 2,
+          "location_hint": "ends"
+        }
+      ],
+      "first_seen_page": 4,
+      "last_seen_page": 6,
+      "confidence": 0.78,
+      "observations": [
+        {
+          "page_number": 4,
+          "local_part_uid": "P4_4",
+          "visual_description": "Leg",
+          "page_position": "center"
+        }
+      ]
+    },
+    {
+      "part_uid": "OBJ0009",
+      "manual_labels": [
+        "4"
+      ],
+      "canonical_name": "Leg 4/4",
+      "base_name": "Leg",
+      "instance_index": 4,
+      "instance_count": 4,
+      "shape_family": "beam",
+      "material_hint": "metal",
+      "quantity_total": 1,
+      "inventory_quantity_total": 4,
+      "geometry_intent": {
+        "primitive": "cuboid",
+        "is_composite": false,
+        "subparts": []
+      },
+      "connection_features": [
+        {
+          "feature_type": "hole",
+          "count": 2,
+          "location_hint": "ends"
+        }
+      ],
+      "first_seen_page": 4,
+      "last_seen_page": 6,
+      "confidence": 0.78,
+      "observations": [
+        {
+          "page_number": 4,
+          "local_part_uid": "P4_4",
+          "visual_description": "Leg",
+          "page_position": "center"
+        }
+      ]
+    }
+  ],
+  "assemblies": [
+    {
+      "assembly_uid": "ASM0001",
+      "canonical_name": "Primary Assembly",
+      "shape_family": "assembly",
+      "material_hint": "mixed",
+      "geometry_intent": {
+        "primitive": "composite",
+        "is_composite": true,
+        "subparts": [
+          "OBJ0001",
+          "OBJ0002",
+          "OBJ0003",
+          "OBJ0004",
+          "OBJ0005",
+          "OBJ0006",
+          "OBJ0007",
+          "OBJ0008",
+          "OBJ0009",
+          "FAST0001",
+          "FAST0002",
+          "FAST0003",
+          "FAST0004"
+        ]
+      },
+      "members": [
+        "OBJ0001",
+        "OBJ0002",
+        "OBJ0003",
+        "OBJ0004",
+        "OBJ0005",
+        "OBJ0006",
+        "OBJ0007",
+        "OBJ0008",
+        "OBJ0009",
+        "FAST0001",
+        "FAST0002",
+        "FAST0003",
+        "FAST0004"
+      ],
+      "first_seen_page": 4,
+      "last_seen_page": 6,
+      "observations": [],
+      "confidence": 0.72
+    }
+  ],
+  "connections": [
+    {
+      "connection_uid": "C0001",
+      "from_node_ref": "OBJ0002",
+      "to_node_ref": "OBJ0001",
+      "connection_type": "screwed",
+      "fasteners": [
+        "FAST0001"
+      ],
+      "tool_ref": "TOOL0002",
+      "created_on_page": 4,
+      "created_by_action": "A0001",
+      "confidence": 0.7,
+      "visual_evidence": "page 4 diagram"
+    },
+    {
+      "connection_uid": "C0002",
+      "from_node_ref": "OBJ0003",
+      "to_node_ref": "OBJ0001",
+      "connection_type": "screwed",
+      "fasteners": [],
+      "tool_ref": "TOOL0002",
+      "created_on_page": 4,
+      "created_by_action": "A0002",
+      "confidence": 0.7,
+      "visual_evidence": "page 4 diagram"
+    },
+    {
+      "connection_uid": "C0003",
+      "from_node_ref": "OBJ0004",
+      "to_node_ref": "OBJ0002",
+      "connection_type": "inserted",
+      "fasteners": [
+        "FAST0002"
+      ],
+      "tool_ref": "",
+      "created_on_page": 5,
+      "created_by_action": "A0003",
+      "confidence": 0.7,
+      "visual_evidence": "page 5 diagram"
+    },
+    {
+      "connection_uid": "C0004",
+      "from_node_ref": "OBJ0005",
+      "to_node_ref": "OBJ0003",
+      "connection_type": "inserted",
+      "fasteners": [],
+      "tool_ref": "",
+      "created_on_page": 5,
+      "created_by_action": "A0004",
+      "confidence": 0.7,
+      "visual_evidence": "page 5 diagram"
+    },
+    {
+      "connection_uid": "C0005",
+      "from_node_ref": "OBJ0006",
+      "to_node_ref": "OBJ0001",
+      "connection_type": "bolted",
+      "fasteners": [
+        "FAST0003",
+        "FAST0004"
+      ],
+      "tool_ref": "TOOL0001",
+      "created_on_page": 6,
+      "created_by_action": "A0005",
+      "confidence": 0.7,
+      "visual_evidence": "page 6 diagram"
+    },
+    {
+      "connection_uid": "C0006",
+      "from_node_ref": "OBJ0007",
+      "to_node_ref": "OBJ0001",
+      "connection_type": "bolted",
+      "fasteners": [],
+      "tool_ref": "TOOL0001",
+      "created_on_page": 6,
+      "created_by_action": "A0006",
+      "confidence": 0.7,
+      "visual_evidence": "page 6 diagram"
+    },
+    {
+      "connection_uid": "C0007",
+      "from_node_ref": "OBJ0008",
+      "to_node_ref": "OBJ0001",
+      "connection_type": "bolted",
+      "fasteners": [],
+      "tool_ref": "TOOL0001",
+      "created_on_page": 6,
+      "created_by_action": "A0007",
+      "confidence": 0.7,
+      "visual_evidence": "page 6 diagram"
+    },
+    {
+      "connection_uid": "C0008",
+      "from_node_ref": "OBJ0009",
+      "to_node_ref": "OBJ0001",
+      "connection_type": "bolted",
+      "fasteners": [],
+      "tool_ref": "TOOL0001",
+      "created_on_page": 6,
+      "created_by_action": "A0008",
+      "confidence": 0.7,
+      "visual_evidence": "page 6 diagram"
+    }
+  ],
+  "fasteners": [
+    {
+      "fastener_uid": "FAST0001",
+      "manual_labels": [
+        "10051905"
+      ],
+      "name": "Screw M6x30mm",
+      "shape_family": "screw",
+      "quantity_total": 8,
+      "geometry_intent": {
+        "primitive": "cylinder"
+      },
+      "first_seen_page": 3,
+      "last_seen_page": 6,
+      "observations": []
+    },
+    {
+      "fastener_uid": "FAST0002",
+      "manual_labels": [
+        "131337"
+      ],
+      "name": "Corner bracket",
+      "shape_family": "bracket",
+      "quantity_total": 4,
+      "geometry_intent": {
+        "primitive": "cylinder"
+      },
+      "first_seen_page": 3,
+      "last_seen_page": 6,
+      "observations": []
+    },
+    {
+      "fastener_uid": "FAST0003",
+      "manual_labels": [
+        "100469"
+      ],
+      "name": "Bolt M8x40mm",
+      "shape_family": "bolt",
+      "quantity_total": 4,
+      "geometry_intent": {
+        "primitive": "cylinder"
+      },
+      "first_seen_page": 3,
+      "last_seen_page": 6,
+      "observations": []
+    },
+    {
+      "fastener_uid": "FAST0004",
+      "manual_labels": [
+        "100843"
+      ],
+      "name": "Spring washer",
+      "shape_family": "washer",
+      "quantity_total": 4,
+      "geometry_intent": {
+        "primitive": "cylinder"
+      },
+      "first_seen_page": 3,
+      "last_seen_page": 6,
+      "observations": []
+    }
+  ],
+  "tools": [
+    {
+      "tool_uid": "TOOL0001",
+      "name": "Spanner 128632",
+      "first_seen_page": 3,
+      "last_seen_page": 6
+    },
+    {
+      "tool_uid": "TOOL0002",
+      "name": "Allen key 100001",
+      "first_seen_page": 3,
+      "last_seen_page": 4
+    }
+  ],
+  "assembly_order": [
+    "C0001",
+    "C0002",
+    "C0003",
+    "C0004",
+    "C0005",
+    "C0006",
+    "C0007",
+    "C0008"
+  ],
+  "debug": {
+    "fixture": "hand-authored MELLTORP underframe"
+  }
+}

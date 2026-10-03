@@ -1,10 +1,38 @@
 import json
+import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 
 GRAPH_PATH = Path("v2/outputs/json/universal_assembly_graph.json")
 OUTPUT_PATH = Path("v2/outputs/json/motion_plan.json")
+
+
+# ---------------------------------------------------------------------
+# MVP SPEED CONTROL
+# ---------------------------------------------------------------------
+# FAST_MVP_MODE = True gives quicker preview renders for development/GitHub demo.
+# Set to False later if you want slower, smoother animations.
+FAST_MVP_MODE = True
+
+if FAST_MVP_MODE:
+    FRAME_GAP = 6
+    MOTION_DURATIONS = {
+        "rotate": 36,
+        "slide": 30,
+        "lower": 30,
+        "arc": 36,
+        "linear": 24,
+    }
+else:
+    FRAME_GAP = 12
+    MOTION_DURATIONS = {
+        "rotate": 72,
+        "slide": 60,
+        "lower": 60,
+        "arc": 72,
+        "linear": 48,
+    }
 
 
 def load_json(path: Path) -> Any:
@@ -28,7 +56,7 @@ def node_name(node_ref: str, node_lookup: Dict[str, Dict[str, Any]]) -> str:
     if node_ref.startswith("ASM"):
         return node.get("canonical_name", node_ref)
 
-    return node.get("canonical_name", node_ref)
+    return node.get("canonical_name", node.get("name", node_ref))
 
 
 def build_node_lookup(graph: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
@@ -49,7 +77,7 @@ def build_node_lookup(graph: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
             item["node_uid"] = uid
             item["node_type"] = "assembly"
             lookup[uid] = item
-            
+
     for fastener in graph.get("fasteners", []):
         uid = fastener.get("fastener_uid")
         if uid:
@@ -57,6 +85,15 @@ def build_node_lookup(graph: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
             item["node_uid"] = uid
             item["node_type"] = "fastener"
             item["canonical_name"] = fastener.get("name", uid)
+            lookup[uid] = item
+
+    for tool in graph.get("tools", []):
+        uid = tool.get("tool_uid")
+        if uid:
+            item = dict(tool)
+            item["node_uid"] = uid
+            item["node_type"] = "tool"
+            item["canonical_name"] = tool.get("name", uid)
             lookup[uid] = item
 
     return lookup
@@ -102,15 +139,7 @@ def action_type_for_connection(connection_type: str) -> str:
 
 
 def duration_for_motion(motion_style: str) -> int:
-    durations = {
-        "rotate": 72,
-        "slide": 60,
-        "lower": 60,
-        "arc": 72,
-        "linear": 48,
-    }
-
-    return durations.get(motion_style, 48)
+    return MOTION_DURATIONS.get(motion_style, MOTION_DURATIONS["linear"])
 
 
 def camera_for_motion(motion_style: str, connection_type: str) -> str:
@@ -130,7 +159,7 @@ def camera_for_motion(motion_style: str, connection_type: str) -> str:
 
 def make_title(
     connection: Dict[str, Any],
-    node_lookup: Dict[str, Dict[str, Any]]
+    node_lookup: Dict[str, Dict[str, Any]],
 ) -> str:
     from_name = node_name(connection.get("from_node_ref", ""), node_lookup)
     to_name = node_name(connection.get("to_node_ref", ""), node_lookup)
@@ -143,7 +172,7 @@ def make_title(
 
 def make_narration(
     connection: Dict[str, Any],
-    node_lookup: Dict[str, Dict[str, Any]]
+    node_lookup: Dict[str, Dict[str, Any]],
 ) -> str:
     from_name = node_name(connection.get("from_node_ref", ""), node_lookup)
     to_name = node_name(connection.get("to_node_ref", ""), node_lookup)
@@ -170,7 +199,7 @@ def make_narration(
 
 def validate_connection(
     connection: Dict[str, Any],
-    node_lookup: Dict[str, Dict[str, Any]]
+    node_lookup: Dict[str, Dict[str, Any]],
 ) -> List[str]:
     warnings: List[str] = []
 
@@ -195,15 +224,8 @@ def validate_connection(
 
     return warnings
 
-def build_motion_plan(
-    graph_path: Path = GRAPH_PATH,
-    output_path: Path = OUTPUT_PATH,
-) -> Dict[str, Any]:
 
-    graph = load_json(graph_path)
-
-    node_lookup = build_node_lookup(graph)
-
+def ordered_connections_from_graph(graph: Dict[str, Any]) -> List[Dict[str, Any]]:
     connections = graph.get("connections", [])
     assembly_order = graph.get("assembly_order", [])
 
@@ -223,126 +245,161 @@ def build_motion_plan(
         if conn not in ordered_connections:
             ordered_connections.append(conn)
 
+    return ordered_connections
+
+
+def moving_and_target_nodes(connection: Dict[str, Any]) -> tuple[List[str], List[str]]:
+    moving_nodes: List[str] = []
+    target_nodes: List[str] = []
+
+    from_ref = connection.get("from_node_ref", "")
+    to_ref = connection.get("to_node_ref", "")
+
+    if from_ref:
+        moving_nodes.append(from_ref)
+
+    if to_ref:
+        target_nodes.append(to_ref)
+
+    for fastener in connection.get("fasteners", []):
+        if fastener and fastener not in moving_nodes:
+            moving_nodes.append(fastener)
+
+    return moving_nodes, target_nodes
+
+
+def build_motion_step(
+    step_number: int,
+    connection: Dict[str, Any],
+    node_lookup: Dict[str, Dict[str, Any]],
+    start_frame: int,
+) -> Dict[str, Any]:
+    motion_style = motion_style_for_connection(
+        connection.get("connection_type", "")
+    )
+
+    action_type = action_type_for_connection(
+        connection.get("connection_type", "")
+    )
+
+    duration = duration_for_motion(motion_style)
+
+    moving_nodes, target_nodes = moving_and_target_nodes(connection)
+
+    end_frame = start_frame + duration
+
+    return {
+        "step_uid": f"M{step_number:04d}",
+        "source_page": connection.get("created_on_page"),
+        "title": make_title(connection, node_lookup),
+        "action_type": action_type,
+        "moving_nodes": moving_nodes,
+        "target_nodes": target_nodes,
+        "connection_refs": [
+            connection.get("connection_uid")
+        ],
+        "start_pose": {
+            "position": "exploded",
+            "orientation": "default"
+        },
+        "end_pose": {
+            "position": "assembled",
+            "orientation": "aligned"
+        },
+        "motion_style": motion_style,
+        "camera": camera_for_motion(
+            motion_style,
+            connection.get("connection_type", "")
+        ),
+        "start_frame": start_frame,
+        "end_frame": end_frame,
+        "duration_frames": duration,
+        "narration": make_narration(
+            connection,
+            node_lookup
+        ),
+        "visual_evidence": connection.get(
+            "visual_evidence",
+            ""
+        )
+    }
+
+
+def build_motion_plan(
+    graph_path: Path = GRAPH_PATH,
+    output_path: Path = OUTPUT_PATH,
+) -> Dict[str, Any]:
+
+    graph = load_json(graph_path)
+
+    node_lookup = build_node_lookup(graph)
+    connections = graph.get("connections", [])
+    ordered_connections = ordered_connections_from_graph(graph)
+
     steps: List[Dict[str, Any]] = []
     warnings: List[str] = []
+    # node -> the step that moves it into place. blender_builder_v3.py
+    # keyframes every step's moving nodes from start_position to
+    # final_position, so a node moving in two steps would jump back to its
+    # exploded position. Each node therefore moves once; later connections
+    # that move nothing new are folded into the step that placed the node.
+    placed_by: Dict[str, Dict[str, Any]] = {}
+    merged_count = 0
 
     current_frame = 1
-    gap = 12
     step_number = 1
 
     for connection in ordered_connections:
-
         validation = validate_connection(connection, node_lookup)
 
         if validation:
             warnings.extend(validation)
 
             if any("invalid self-connection" in x for x in validation):
-                print(f"Skipping self connection {connection['connection_uid']}")
+                print(f"Skipping self connection {connection.get('connection_uid', '')}")
                 continue
 
             if any("does not exist" in x for x in validation):
-                print(f"Skipping invalid connection {connection['connection_uid']}")
+                print(f"Skipping invalid connection {connection.get('connection_uid', '')}")
                 continue
 
-        motion_style = motion_style_for_connection(
-            connection.get("connection_type", "")
+        moving_nodes, _ = moving_and_target_nodes(connection)
+        new_movers = [uid for uid in moving_nodes if uid not in placed_by]
+
+        if not moving_nodes:
+            continue
+
+        if not new_movers:
+            owner = placed_by[moving_nodes[0]]
+            owner["connection_refs"].append(connection.get("connection_uid"))
+            merged_count += 1
+            continue
+
+        step = build_motion_step(
+            step_number=step_number,
+            connection=connection,
+            node_lookup=node_lookup,
+            start_frame=current_frame,
         )
+        step["moving_nodes"] = new_movers
 
-        action_type = action_type_for_connection(
-            connection.get("connection_type", "")
-        )
-
-        duration = duration_for_motion(motion_style)
-
-        moving_nodes = []
-
-        target_nodes = []
-
-        if connection.get("from_node_ref"):
-            moving_nodes.append(connection["from_node_ref"])
-
-        if connection.get("to_node_ref"):
-            target_nodes.append(connection["to_node_ref"])
-
-        for fastener in connection.get("fasteners", []):
-
-            if fastener:
-                moving_nodes.append(fastener)
-
-        start_frame = current_frame
-        end_frame = start_frame + duration
-
-        step = {
-
-            "step_uid": f"M{step_number:04d}",
-
-            "source_page": connection.get("created_on_page"),
-
-            "title": make_title(connection, node_lookup),
-
-            "action_type": action_type,
-
-            "moving_nodes": moving_nodes,
-
-            "target_nodes": target_nodes,
-
-            "connection_refs": [
-                connection.get("connection_uid")
-            ],
-
-            "start_pose": {
-                "position": "exploded",
-                "orientation": "default"
-            },
-
-            "end_pose": {
-                "position": "assembled",
-                "orientation": "aligned"
-            },
-
-            "motion_style": motion_style,
-
-            "camera": camera_for_motion(
-                motion_style,
-                connection.get("connection_type", "")
-            ),
-
-            "start_frame": start_frame,
-
-            "end_frame": end_frame,
-
-            "duration_frames": duration,
-
-            "narration": make_narration(
-                connection,
-                node_lookup
-            ),
-
-            "visual_evidence": connection.get(
-                "visual_evidence",
-                ""
-            )
-        }
+        for uid in new_movers:
+            placed_by[uid] = step
 
         steps.append(step)
 
         step_number += 1
-
-        current_frame = end_frame + gap
+        current_frame = step["end_frame"] + FRAME_GAP
 
     motion_plan = {
-
-        "schema_version": "2.1",
-
+        "schema_version": "2.2",
         "fps": 24,
-
+        "fast_mvp_mode": FAST_MVP_MODE,
+        "frame_gap": FRAME_GAP,
+        "duration_profile": MOTION_DURATIONS,
         "total_frames": max(current_frame, 1),
-
         "steps": steps,
-
-        "warnings": warnings
-
+        "warnings": warnings,
     }
 
     save_json(motion_plan, output_path)
@@ -350,9 +407,12 @@ def build_motion_plan(
     print()
     print("Motion Planner Summary")
     print("----------------------")
+    print(f"Fast MVP Mode: {FAST_MVP_MODE}")
+    print(f"Frame gap: {FRAME_GAP}")
     print(f"Nodes: {len(node_lookup)}")
     print(f"Connections: {len(connections)}")
     print(f"Motion Steps: {len(steps)}")
+    print(f"Connections folded into earlier steps: {merged_count}")
     print(f"Warnings: {len(warnings)}")
     print(f"Frames: {motion_plan['total_frames']}")
     print()
@@ -361,4 +421,10 @@ def build_motion_plan(
 
 
 if __name__ == "__main__":
-    build_motion_plan()
+    result = build_motion_plan()
+
+    if not result["steps"]:
+        sys.exit(
+            "ERROR: the motion plan has no steps, so the video would be a single still "
+            "frame. See the warnings above and universal_assembly_graph.json."
+        )

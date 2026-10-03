@@ -1,0 +1,728 @@
+{
+  "metadata": {
+    "created_at": "2026-10-03T13:43:05.283742",
+    "source": "universal_assembly_graph.json + diagram_analysis.json",
+    "note": "Canonical-ID-keyed proxy shape extraction for MVP rendering"
+  },
+  "parts": [
+    {
+      "part_uid": "OBJ0001",
+      "canonical_name": "Tabletop",
+      "shape_family": "panel",
+      "material_hint": "wood",
+      "shape_type": "thin_plate",
+      "primitive": "box",
+      "dimensions": [
+        0.75,
+        0.018,
+        1.25
+      ],
+      "dims_source": "manual_measurement",
+      "aspect_ratio": 69.444,
+      "source_page": 4,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [
+        {
+          "hole_uid": "H1",
+          "type": "round",
+          "relative_position": [
+            0.125,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "underside corners"
+        },
+        {
+          "hole_uid": "H2",
+          "type": "round",
+          "relative_position": [
+            0.375,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "underside corners"
+        },
+        {
+          "hole_uid": "H3",
+          "type": "round",
+          "relative_position": [
+            0.625,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "underside corners"
+        },
+        {
+          "hole_uid": "H4",
+          "type": "round",
+          "relative_position": [
+            0.875,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "underside corners"
+        }
+      ],
+      "anchor_points": [
+        {
+          "anchor_uid": "A_TOP",
+          "relative_position": [
+            0.5,
+            0.0
+          ]
+        },
+        {
+          "anchor_uid": "A_CENTER",
+          "relative_position": [
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "anchor_uid": "A_BOTTOM",
+          "relative_position": [
+            0.5,
+            1.0
+          ]
+        }
+      ],
+      "labels": [
+        "1"
+      ],
+      "confidence": 0.78
+    },
+    {
+      "part_uid": "OBJ0002",
+      "canonical_name": "Long side rail 1/2",
+      "shape_family": "frame",
+      "material_hint": "metal",
+      "shape_type": "rectangular_beam",
+      "primitive": "box",
+      "dimensions": [
+        0.06,
+        0.09,
+        1.1
+      ],
+      "dims_source": "manual_measurement",
+      "aspect_ratio": 18.333,
+      "source_page": 4,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [
+        {
+          "hole_uid": "H1",
+          "type": "round",
+          "relative_position": [
+            0.25,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        },
+        {
+          "hole_uid": "H2",
+          "type": "round",
+          "relative_position": [
+            0.75,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        }
+      ],
+      "anchor_points": [
+        {
+          "anchor_uid": "A_TOP",
+          "relative_position": [
+            0.5,
+            0.0
+          ]
+        },
+        {
+          "anchor_uid": "A_CENTER",
+          "relative_position": [
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "anchor_uid": "A_BOTTOM",
+          "relative_position": [
+            0.5,
+            1.0
+          ]
+        }
+      ],
+      "labels": [
+        "2"
+      ],
+      "confidence": 0.78
+    },
+    {
+      "part_uid": "OBJ0003",
+      "canonical_name": "Long side rail 2/2",
+      "shape_family": "frame",
+      "material_hint": "metal",
+      "shape_type": "rectangular_beam",
+      "primitive": "box",
+      "dimensions": [
+        0.06,
+        0.09,
+        1.1
+      ],
+      "dims_source": "manual_measurement",
+      "aspect_ratio": 18.333,
+      "source_page": 4,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [
+        {
+          "hole_uid": "H1",
+          "type": "round",
+          "relative_position": [
+            0.25,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        },
+        {
+          "hole_uid": "H2",
+          "type": "round",
+          "relative_position": [
+            0.75,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        }
+      ],
+      "anchor_points": [
+        {
+          "anchor_uid": "A_TOP",
+          "relative_position": [
+            0.5,
+            0.0
+          ]
+        },
+        {
+          "anchor_uid": "A_CENTER",
+          "relative_position": [
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "anchor_uid": "A_BOTTOM",
+          "relative_position": [
+            0.5,
+            1.0
+          ]
+        }
+      ],
+      "labels": [
+        "2"
+      ],
+      "confidence": 0.78
+    },
+    {
+      "part_uid": "OBJ0004",
+      "canonical_name": "Short end rail 1/2",
+      "shape_family": "frame",
+      "material_hint": "metal",
+      "shape_type": "rectangular_beam",
+      "primitive": "box",
+      "dimensions": [
+        0.06,
+        0.09,
+        0.62
+      ],
+      "dims_source": "manual_measurement",
+      "aspect_ratio": 10.333,
+      "source_page": 4,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [
+        {
+          "hole_uid": "H1",
+          "type": "round",
+          "relative_position": [
+            0.25,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        },
+        {
+          "hole_uid": "H2",
+          "type": "round",
+          "relative_position": [
+            0.75,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        }
+      ],
+      "anchor_points": [
+        {
+          "anchor_uid": "A_TOP",
+          "relative_position": [
+            0.5,
+            0.0
+          ]
+        },
+        {
+          "anchor_uid": "A_CENTER",
+          "relative_position": [
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "anchor_uid": "A_BOTTOM",
+          "relative_position": [
+            0.5,
+            1.0
+          ]
+        }
+      ],
+      "labels": [
+        "3"
+      ],
+      "confidence": 0.78
+    },
+    {
+      "part_uid": "OBJ0005",
+      "canonical_name": "Short end rail 2/2",
+      "shape_family": "frame",
+      "material_hint": "metal",
+      "shape_type": "rectangular_beam",
+      "primitive": "box",
+      "dimensions": [
+        0.06,
+        0.09,
+        0.62
+      ],
+      "dims_source": "manual_measurement",
+      "aspect_ratio": 10.333,
+      "source_page": 4,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [
+        {
+          "hole_uid": "H1",
+          "type": "round",
+          "relative_position": [
+            0.25,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        },
+        {
+          "hole_uid": "H2",
+          "type": "round",
+          "relative_position": [
+            0.75,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        }
+      ],
+      "anchor_points": [
+        {
+          "anchor_uid": "A_TOP",
+          "relative_position": [
+            0.5,
+            0.0
+          ]
+        },
+        {
+          "anchor_uid": "A_CENTER",
+          "relative_position": [
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "anchor_uid": "A_BOTTOM",
+          "relative_position": [
+            0.5,
+            1.0
+          ]
+        }
+      ],
+      "labels": [
+        "3"
+      ],
+      "confidence": 0.78
+    },
+    {
+      "part_uid": "OBJ0006",
+      "canonical_name": "Leg 1/4",
+      "shape_family": "beam",
+      "material_hint": "metal",
+      "shape_type": "rectangular_beam",
+      "primitive": "box",
+      "dimensions": [
+        0.05,
+        0.09,
+        0.71
+      ],
+      "dims_source": "manual_measurement",
+      "aspect_ratio": 14.2,
+      "source_page": 4,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [
+        {
+          "hole_uid": "H1",
+          "type": "round",
+          "relative_position": [
+            0.25,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        },
+        {
+          "hole_uid": "H2",
+          "type": "round",
+          "relative_position": [
+            0.75,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        }
+      ],
+      "anchor_points": [
+        {
+          "anchor_uid": "A_TOP",
+          "relative_position": [
+            0.5,
+            0.0
+          ]
+        },
+        {
+          "anchor_uid": "A_CENTER",
+          "relative_position": [
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "anchor_uid": "A_BOTTOM",
+          "relative_position": [
+            0.5,
+            1.0
+          ]
+        }
+      ],
+      "labels": [
+        "4"
+      ],
+      "confidence": 0.78
+    },
+    {
+      "part_uid": "OBJ0007",
+      "canonical_name": "Leg 2/4",
+      "shape_family": "beam",
+      "material_hint": "metal",
+      "shape_type": "rectangular_beam",
+      "primitive": "box",
+      "dimensions": [
+        0.05,
+        0.09,
+        0.71
+      ],
+      "dims_source": "manual_measurement",
+      "aspect_ratio": 14.2,
+      "source_page": 4,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [
+        {
+          "hole_uid": "H1",
+          "type": "round",
+          "relative_position": [
+            0.25,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        },
+        {
+          "hole_uid": "H2",
+          "type": "round",
+          "relative_position": [
+            0.75,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        }
+      ],
+      "anchor_points": [
+        {
+          "anchor_uid": "A_TOP",
+          "relative_position": [
+            0.5,
+            0.0
+          ]
+        },
+        {
+          "anchor_uid": "A_CENTER",
+          "relative_position": [
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "anchor_uid": "A_BOTTOM",
+          "relative_position": [
+            0.5,
+            1.0
+          ]
+        }
+      ],
+      "labels": [
+        "4"
+      ],
+      "confidence": 0.78
+    },
+    {
+      "part_uid": "OBJ0008",
+      "canonical_name": "Leg 3/4",
+      "shape_family": "beam",
+      "material_hint": "metal",
+      "shape_type": "rectangular_beam",
+      "primitive": "box",
+      "dimensions": [
+        0.05,
+        0.09,
+        0.71
+      ],
+      "dims_source": "manual_measurement",
+      "aspect_ratio": 14.2,
+      "source_page": 4,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [
+        {
+          "hole_uid": "H1",
+          "type": "round",
+          "relative_position": [
+            0.25,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        },
+        {
+          "hole_uid": "H2",
+          "type": "round",
+          "relative_position": [
+            0.75,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        }
+      ],
+      "anchor_points": [
+        {
+          "anchor_uid": "A_TOP",
+          "relative_position": [
+            0.5,
+            0.0
+          ]
+        },
+        {
+          "anchor_uid": "A_CENTER",
+          "relative_position": [
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "anchor_uid": "A_BOTTOM",
+          "relative_position": [
+            0.5,
+            1.0
+          ]
+        }
+      ],
+      "labels": [
+        "4"
+      ],
+      "confidence": 0.78
+    },
+    {
+      "part_uid": "OBJ0009",
+      "canonical_name": "Leg 4/4",
+      "shape_family": "beam",
+      "material_hint": "metal",
+      "shape_type": "rectangular_beam",
+      "primitive": "box",
+      "dimensions": [
+        0.05,
+        0.09,
+        0.71
+      ],
+      "dims_source": "manual_measurement",
+      "aspect_ratio": 14.2,
+      "source_page": 4,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [
+        {
+          "hole_uid": "H1",
+          "type": "round",
+          "relative_position": [
+            0.25,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        },
+        {
+          "hole_uid": "H2",
+          "type": "round",
+          "relative_position": [
+            0.75,
+            0.5
+          ],
+          "radius_hint": 0.006,
+          "location_hint": "ends"
+        }
+      ],
+      "anchor_points": [
+        {
+          "anchor_uid": "A_TOP",
+          "relative_position": [
+            0.5,
+            0.0
+          ]
+        },
+        {
+          "anchor_uid": "A_CENTER",
+          "relative_position": [
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "anchor_uid": "A_BOTTOM",
+          "relative_position": [
+            0.5,
+            1.0
+          ]
+        }
+      ],
+      "labels": [
+        "4"
+      ],
+      "confidence": 0.78
+    },
+    {
+      "part_uid": "FAST0001",
+      "canonical_name": "Screw M6x30mm",
+      "shape_family": "screw",
+      "material_hint": "metal",
+      "shape_type": "cylinder",
+      "primitive": "cylinder",
+      "dimensions": [
+        0.006,
+        0.006,
+        0.03
+      ],
+      "dims_source": "parsed_from_name",
+      "aspect_ratio": 5.0,
+      "source_page": 3,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [],
+      "anchor_points": [],
+      "labels": [
+        "10051905"
+      ],
+      "confidence": 0.8
+    },
+    {
+      "part_uid": "FAST0002",
+      "canonical_name": "Corner bracket",
+      "shape_family": "bracket",
+      "material_hint": "metal",
+      "shape_type": "bracket",
+      "primitive": "box",
+      "dimensions": [
+        0.05,
+        0.03,
+        0.04
+      ],
+      "dims_source": "fallback_default",
+      "aspect_ratio": 1.667,
+      "source_page": 3,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [],
+      "anchor_points": [],
+      "labels": [
+        "131337"
+      ],
+      "confidence": 0.8
+    },
+    {
+      "part_uid": "FAST0003",
+      "canonical_name": "Bolt M8x40mm",
+      "shape_family": "bolt",
+      "material_hint": "metal",
+      "shape_type": "cylinder",
+      "primitive": "cylinder",
+      "dimensions": [
+        0.008,
+        0.008,
+        0.04
+      ],
+      "dims_source": "parsed_from_name",
+      "aspect_ratio": 5.0,
+      "source_page": 3,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [],
+      "anchor_points": [],
+      "labels": [
+        "100469"
+      ],
+      "confidence": 0.8
+    },
+    {
+      "part_uid": "FAST0004",
+      "canonical_name": "Spring washer",
+      "shape_family": "washer",
+      "material_hint": "metal",
+      "shape_type": "washer",
+      "primitive": "cylinder",
+      "dimensions": [
+        0.016,
+        0.016,
+        0.003
+      ],
+      "dims_source": "parsed_from_name",
+      "aspect_ratio": 5.333,
+      "source_page": 3,
+      "source_diagram_uid": "",
+      "has_rounded_corners": false,
+      "holes": [],
+      "anchor_points": [],
+      "labels": [
+        "100843"
+      ],
+      "confidence": 0.8
+    }
+  ]
+}

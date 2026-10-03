@@ -1,11 +1,17 @@
 import json
+import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Set
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from v2.agents.object_identity_tracker import identity_keys, is_assembly_like_part, similar_name_key
 
 
 PAGE_STATES_PATH = Path("v2/outputs/json/page_states.json")
-ASSEMBLY_DELTAS_PATH = Path("v2/outputs/json/assembly_deltas.json")
-ASSEMBLY_ACTIONS_PATH = Path("v2/outputs/json/assembly_actions.json")
+RAW_ACTIONS_PATH = Path("v2/outputs/json/assembly_actions.json")
+RESOLVED_ACTIONS_PATH = Path("v2/outputs/json/resolved_assembly_actions.json")
+IDENTITY_MAP_PATH = Path("v2/outputs/json/object_identity_map.json")
 OUTPUT_PATH = Path("v2/outputs/json/universal_assembly_graph.json")
 
 
@@ -24,521 +30,485 @@ def norm(value: Any) -> str:
     return str(value or "").strip().lower()
 
 
-def primitive_from_shape(shape: str) -> str:
-    shape = norm(shape)
-    return {
-        "panel": "panel",
-        "beam": "beam",
-        "frame": "composite",
-        "curved": "curved",
-        "cylinder": "cylinder",
-        "bracket": "bracket",
-        "hinge": "hinge",
-        "wheel": "wheel",
-        "cable": "cable",
-        "electronics": "electronics_box",
-        "screw": "screw",
-        "bolt": "bolt",
-        "washer": "washer",
-        "nut": "nut",
-        "dowel": "cylinder",
-        "irregular": "irregular",
-    }.get(shape, "unknown")
+def first_non_empty(*values: Any) -> str:
+    for value in values:
+        text = str(value or "").strip()
+        if text:
+            return text
+    return ""
 
 
-def is_tool_like(item: Dict[str, Any]) -> bool:
-    text = norm(f"{item.get('name')} {item.get('visual_description')} {item.get('manual_label')}")
-    return any(x in text for x in ["hex key", "allen key", "screwdriver", "drill", "hammer"])
+def infer_category(text: str) -> str:
+    t = norm(text)
+    if "chair" in t:
+        return "chair"
+    if "table" in t:
+        return "table"
+    if "bed" in t:
+        return "bed"
+    if "bike" in t or "bicycle" in t:
+        return "bicycle"
+    return "unknown"
 
 
-def is_fastener_like(item: Dict[str, Any]) -> bool:
-    text = norm(f"{item.get('name')} {item.get('visual_description')} {item.get('shape_family')}")
-    return any(x in text for x in ["screw", "bolt", "nut", "washer", "dowel", "fastener"])
+def infer_part_primitive(part: Dict[str, Any]) -> str:
+    text = norm(
+        f"{part.get('manual_label', '')} "
+        f"{part.get('name', '')} "
+        f"{part.get('shape_family', '')} "
+        f"{part.get('visual_description', '')}"
+    )
+
+    if "seat" in text or "pad" in text or "cushion" in text:
+        return "rounded_panel"
+    if "chair back" in text or "backrest" in text or "slat" in text:
+        return "chair_back_frame"
+    if "front leg" in text or "leg" in text:
+        return "leg_frame"
+    if "side rail" in text or "rail" in text:
+        return "rail"
+    if "panel" in text:
+        return "panel"
+    if "beam" in text:
+        return "beam"
+    if "frame" in text:
+        return "composite"
+
+    return part.get("shape_family", "box") or "box"
 
 
-class UniversalGraphBuilder:
-    def __init__(self) -> None:
-        self.parts: List[Dict[str, Any]] = []
-        self.assemblies: List[Dict[str, Any]] = []
-        self.fasteners: List[Dict[str, Any]] = []
-        self.tools: List[Dict[str, Any]] = []
-        self.connections: List[Dict[str, Any]] = []
+def is_composite_primitive(primitive: str) -> bool:
+    return primitive in {"chair_back_frame", "leg_frame", "composite"}
 
-        self.local_to_global_node: Dict[str, str] = {}
-        self.local_to_fastener: Dict[str, str] = {}
-        self.local_to_tool: Dict[str, str] = {}
 
-        # label -> list of physical part UIDs created from inventory quantity
-        self.inventory_label_to_parts: Dict[str, List[str]] = {}
-        self.inventory_name_to_parts: Dict[str, List[str]] = {}
-        self.inventory_claim_index: Dict[str, int] = {}
+def infer_fastener_primitive(fastener: Dict[str, Any]) -> str:
+    text = norm(f"{fastener.get('name', '')} {fastener.get('shape_family', '')}")
 
-        self.part_counter = 1
-        self.assembly_counter = 1
-        self.fastener_counter = 1
-        self.tool_counter = 1
-        self.connection_counter = 1
+    if "washer" in text:
+        return "washer"
+    if "bolt" in text:
+        return "bolt"
+    if "screw" in text:
+        return "screw"
+    if "dowel" in text or "cylinder" in text:
+        return "cylinder"
+    if "key" in text:
+        return "tool"
 
-        self.current_assembly_uid: Optional[str] = None
-        self.warnings: List[str] = []
+    return fastener.get("shape_family", "cylinder") or "cylinder"
 
-    def local_key(self, page: int, local_uid: str) -> str:
-        return f"p{page}:{local_uid}"
 
-    def new_part_uid(self) -> str:
-        uid = f"OBJ{self.part_counter:04d}"
-        self.part_counter += 1
-        return uid
+def load_identity_lookup() -> Dict[str, str]:
+    if not IDENTITY_MAP_PATH.exists():
+        return {}
+    data = load_json(IDENTITY_MAP_PATH)
+    return data.get("local_to_canonical", {})
 
-    def new_assembly_uid(self) -> str:
-        uid = f"ASM{self.assembly_counter:04d}"
-        self.assembly_counter += 1
-        return uid
 
-    def new_fastener_uid(self) -> str:
-        uid = f"FAST{self.fastener_counter:04d}"
-        self.fastener_counter += 1
-        return uid
+def load_best_actions() -> Dict[str, Any]:
+    if RESOLVED_ACTIONS_PATH.exists():
+        return load_json(RESOLVED_ACTIONS_PATH)
+    return load_json(RAW_ACTIONS_PATH)
 
-    def new_tool_uid(self) -> str:
-        uid = f"TOOL{self.tool_counter:04d}"
-        self.tool_counter += 1
-        return uid
 
-    def new_connection_uid(self) -> str:
-        uid = f"CONN{self.connection_counter:04d}"
-        self.connection_counter += 1
-        return uid
+def part_kinds_from_pages(page_states: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """One entry per distinct kind of part, in first-seen order.
 
-    def is_assembly_observation(self, part: Dict[str, Any]) -> bool:
-        text = norm(f"{part.get('name')} {part.get('visual_description')}")
-        shape = norm(part.get("shape_family"))
-        return (
-            "assembled frame" in text
-            or "partially assembled" in text
-            or "frame with" in text
-            or "chair frame" in text
-            or "assembled structure" in text
-            or (shape == "frame" and "assembled" in text)
-        )
+    Parts-list pages come first and are authoritative for quantity. Parts
+    that only appear on assembly pages (e.g. an unlabelled tabletop, rails
+    and legs, which IKEA parts lists often omit) are added too, keyed by
+    label or normalised name, with the largest quantity seen on any page.
+    Assembly-like parts ("assembled frame") are left out; they map to the
+    primary assembly instead.
+    """
+    kinds: List[Dict[str, Any]] = []
+    kind_by_key: Dict[str, Dict[str, Any]] = {}
 
-    def make_part_record(self, observed: Dict[str, Any], page: int, instance_index: int = 1, total_instances: int = 1) -> Dict[str, Any]:
-        uid = self.new_part_uid()
-        label = observed.get("manual_label", "")
-        base_name = observed.get("name") or observed.get("visual_description") or "unknown part"
+    def add_or_merge(local_part: Dict[str, Any], page_number: int, from_parts_list: bool) -> None:
+        keys = identity_keys(local_part.get("manual_label"), local_part.get("name"))
+        if not keys:
+            return
 
-        name = base_name
-        if total_instances > 1:
-            name = f"{base_name} {instance_index}/{total_instances}"
+        quantity = int(local_part.get("quantity_visible") or 1)
+        existing = next((kind_by_key[k] for k in keys if k in kind_by_key), None)
 
-        return {
-            "part_uid": uid,
-            "manual_labels": [label] if label else [],
-            "canonical_name": name,
-            "base_name": base_name,
-            "instance_index": instance_index,
-            "instance_count": total_instances,
-            "shape_family": observed.get("shape_family", "unknown"),
-            "material_hint": observed.get("material_hint", "unknown"),
-            "quantity_total": 1,
-            "inventory_quantity_total": total_instances,
-            "geometry_intent": {
-                "primitive": primitive_from_shape(observed.get("shape_family", "unknown")),
-                "is_composite": norm(observed.get("shape_family")) == "frame",
-                "subparts": []
-            },
-            "connection_features": observed.get("connection_features", []),
-            "first_seen_page": page,
-            "last_seen_page": page,
-            "confidence": 0.75,
-            "observations": [
-                {
-                    "page_number": page,
-                    "local_part_uid": observed.get("part_uid", ""),
-                    "visual_description": observed.get("visual_description", ""),
-                    "page_position": observed.get("page_position", "unknown")
+        if existing is None:
+            # Same part named slightly differently on another page ("long
+            # rail" / "long side rail"), unless both carry different labels.
+            similar = ""
+            for key in keys:
+                similar = similar_name_key(key, kind_by_key)
+                if similar:
+                    break
+            candidate = kind_by_key.get(similar)
+            labelled = any(k.startswith("label:") for k in keys)
+            if candidate and not (labelled and any(k.startswith("label:") for k in candidate["keys"])):
+                existing = candidate
+
+        if existing:
+            if not existing["from_parts_list"]:
+                existing["quantity"] = max(existing["quantity"], quantity)
+            for key in keys:
+                if key not in kind_by_key:
+                    kind_by_key[key] = existing
+                    existing["keys"].append(key)
+            return
+
+        kind = {
+            "local_part": local_part,
+            "page_number": page_number,
+            "quantity": quantity,
+            "keys": keys,
+            "from_parts_list": from_parts_list,
+        }
+        kinds.append(kind)
+        for key in keys:
+            kind_by_key[key] = kind
+
+    for page in page_states:
+        if norm(page.get("page_type")) == "parts_list":
+            for local_part in page.get("visible_parts", []):
+                add_or_merge(local_part, int(page.get("page_number", 0)), True)
+
+    for page in page_states:
+        if norm(page.get("page_type")) not in {"assembly_step", "final_check"}:
+            continue
+        for local_part in page.get("visible_parts", []):
+            if not is_assembly_like_part(local_part):
+                add_or_merge(local_part, int(page.get("page_number", 0)), False)
+
+    return kinds
+
+
+def collect_inventory_parts(page_states: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    parts: List[Dict[str, Any]] = []
+    counter = 1
+
+    for kind in part_kinds_from_pages(page_states):
+        local_part = kind["local_part"]
+        page_number = kind["page_number"]
+        quantity = kind["quantity"]
+
+        label = str(local_part.get("manual_label", "")).strip()
+        name = first_non_empty(local_part.get("name"), f"Part {label}")
+        primitive = infer_part_primitive(local_part)
+
+        for idx in range(1, quantity + 1):
+            uid = f"OBJ{counter:04d}"
+
+            parts.append({
+                "part_uid": uid,
+                "manual_labels": [label] if label else [],
+                "canonical_name": f"{name} {idx}/{quantity}" if quantity > 1 else name,
+                "base_name": name,
+                "identity_keys": kind["keys"],
+                "instance_index": idx,
+                "instance_count": quantity,
+                "shape_family": local_part.get("shape_family", "unknown"),
+                "material_hint": local_part.get("material_hint", "unknown"),
+                "quantity_total": 1,
+                "inventory_quantity_total": quantity,
+                "inventory_source": "parts_list" if kind["from_parts_list"] else "assembly_pages",
+                "geometry_intent": {
+                    "primitive": primitive,
+                    "is_composite": is_composite_primitive(primitive),
+                    "subparts": [],
+                },
+                "connection_features": local_part.get("connection_features", []),
+                "first_seen_page": page_number,
+                "last_seen_page": page_number,
+                "confidence": 0.78 if kind["from_parts_list"] else 0.68,
+                "observations": [{
+                    "page_number": page_number,
+                    "local_part_uid": local_part.get("part_uid", ""),
+                    "visual_description": local_part.get("visual_description", ""),
+                    "page_position": local_part.get("page_position", ""),
+                }],
+            })
+
+            counter += 1
+
+    return parts
+
+
+def add_page_observations(
+    parts: List[Dict[str, Any]],
+    page_states: List[Dict[str, Any]],
+    identity_lookup: Dict[str, str],
+) -> None:
+    by_uid = {part["part_uid"]: part for part in parts}
+
+    for page in page_states:
+        if norm(page.get("page_type")) not in {"assembly_step", "final_check"}:
+            continue
+
+        page_number = int(page.get("page_number", 0))
+
+        for local_part in page.get("visible_parts", []):
+            local_uid = local_part.get("part_uid", "")
+            canonical_uid = identity_lookup.get(local_uid, "")
+
+            if canonical_uid not in by_uid:
+                continue
+
+            part = by_uid[canonical_uid]
+
+            if any(obs.get("local_part_uid") == local_uid for obs in part.get("observations", [])):
+                continue
+
+            part["last_seen_page"] = max(int(part.get("last_seen_page", 0)), page_number)
+            part.setdefault("observations", []).append({
+                "page_number": page_number,
+                "local_part_uid": local_uid,
+                "visual_description": local_part.get("visual_description", ""),
+                "page_position": local_part.get("page_position", ""),
+            })
+
+
+def collect_fasteners_and_tools(page_states: List[Dict[str, Any]]) -> tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    fasteners_by_key: Dict[str, Dict[str, Any]] = {}
+    tools_by_key: Dict[str, Dict[str, Any]] = {}
+    fastener_counter = 1
+    tool_counter = 1
+
+    for page in page_states:
+        page_number = int(page.get("page_number", 0))
+
+        for fastener in page.get("visible_fasteners", []):
+            label = str(fastener.get("manual_label", "")).strip()
+            name = first_non_empty(fastener.get("name"), f"Fastener {label}")
+            key = label or norm(name)
+
+            if key not in fasteners_by_key:
+                uid = f"FAST{fastener_counter:04d}"
+                fastener_counter += 1
+                fasteners_by_key[key] = {
+                    "fastener_uid": uid,
+                    "manual_labels": [label] if label else [],
+                    "name": name,
+                    "shape_family": fastener.get("shape_family", "unknown"),
+                    "quantity_total": int(fastener.get("quantity_visible") or 1),
+                    "geometry_intent": {
+                        "primitive": infer_fastener_primitive(fastener)
+                    },
+                    "first_seen_page": page_number,
+                    "last_seen_page": page_number,
+                    "observations": [],
                 }
-            ]
-        }
 
-    def create_inventory_parts(self, observed: Dict[str, Any], page: int) -> List[str]:
-        qty = max(1, int(observed.get("quantity_visible", 1) or 1))
-        label = norm(observed.get("manual_label"))
-        name_key = norm(observed.get("name") or observed.get("visual_description"))
+            fasteners_by_key[key]["last_seen_page"] = max(
+                fasteners_by_key[key]["last_seen_page"],
+                page_number,
+            )
+            fasteners_by_key[key]["observations"].append({
+                "page_number": page_number,
+                "local_fastener_uid": fastener.get("fastener_uid", ""),
+            })
 
-        if label and label in self.inventory_label_to_parts:
-            return self.inventory_label_to_parts[label]
+        for tool in page.get("visible_tools", []):
+            name = first_non_empty(tool.get("name"), "Tool")
+            key = norm(name)
 
-        if not label and name_key in self.inventory_name_to_parts:
-            return self.inventory_name_to_parts[name_key]
+            if key not in tools_by_key:
+                uid = f"TOOL{tool_counter:04d}"
+                tool_counter += 1
+                tools_by_key[key] = {
+                    "tool_uid": uid,
+                    "name": name,
+                    "first_seen_page": page_number,
+                    "last_seen_page": page_number,
+                }
 
-        uids = []
-        for i in range(1, qty + 1):
-            part = self.make_part_record(observed, page, i, qty)
-            self.parts.append(part)
-            uids.append(part["part_uid"])
+            tools_by_key[key]["last_seen_page"] = max(
+                tools_by_key[key]["last_seen_page"],
+                page_number,
+            )
 
-        if label:
-            self.inventory_label_to_parts[label] = uids
-        if name_key:
-            self.inventory_name_to_parts[name_key] = uids
+    return list(fasteners_by_key.values()), list(tools_by_key.values())
 
-        return uids
 
-    def claim_inventory_part(self, observed: Dict[str, Any], page: int) -> Optional[str]:
-        label = norm(observed.get("manual_label"))
-        name_key = norm(observed.get("name") or observed.get("visual_description"))
+def build_connections_from_actions(actions: List[Dict[str, Any]]) -> tuple[List[Dict[str, Any]], List[str], List[str]]:
+    connections: List[Dict[str, Any]] = []
+    assembly_order: List[str] = []
+    uncertainties: List[str] = []
+    seen: Set[tuple[str, str, str]] = set()
+    connected_pairs: Set[frozenset] = set()
+    counter = 1
 
-        candidates = []
-        claim_key = ""
-
-        if label and label in self.inventory_label_to_parts:
-            candidates = self.inventory_label_to_parts[label]
-            claim_key = f"label:{label}"
-        elif name_key and name_key in self.inventory_name_to_parts:
-            candidates = self.inventory_name_to_parts[name_key]
-            claim_key = f"name:{name_key}"
-
-        if not candidates:
-            return None
-
-        idx = self.inventory_claim_index.get(claim_key, 0)
-        uid = candidates[min(idx, len(candidates) - 1)]
-        self.inventory_claim_index[claim_key] = idx + 1
-
-        part = self.get_part(uid)
-        self.update_part(part, observed, page)
-        return uid
-
-    def get_part(self, uid: str) -> Dict[str, Any]:
-        for part in self.parts:
-            if part["part_uid"] == uid:
-                return part
-        raise KeyError(uid)
-
-    def create_assembly(self, observed: Dict[str, Any], page: int) -> Dict[str, Any]:
-        uid = self.new_assembly_uid()
-        assembly = {
-            "assembly_uid": uid,
-            "canonical_name": observed.get("name") or "assembled frame",
-            "shape_family": observed.get("shape_family", "frame"),
-            "material_hint": observed.get("material_hint", "unknown"),
-            "geometry_intent": {
-                "primitive": "composite",
-                "is_composite": True,
-                "subparts": []
-            },
-            "members": [],
-            "first_seen_page": page,
-            "last_seen_page": page,
-            "observations": [],
-            "confidence": 0.75
-        }
-        self.assemblies.append(assembly)
-        return assembly
-
-    def update_assembly(self, assembly: Dict[str, Any], observed: Dict[str, Any], page: int) -> None:
-        assembly["last_seen_page"] = max(int(assembly.get("last_seen_page", page)), page)
-        if assembly.get("material_hint") in ["", "unknown"]:
-            assembly["material_hint"] = observed.get("material_hint", "unknown")
-        assembly["observations"].append({
-            "page_number": page,
-            "local_part_uid": observed.get("part_uid", ""),
-            "visual_description": observed.get("visual_description", ""),
-            "page_position": observed.get("page_position", "unknown")
-        })
-
-    def register_assembly_observation(self, observed: Dict[str, Any], page: int) -> str:
-        local_uid = observed.get("part_uid", "")
-        key = self.local_key(page, local_uid)
-        if key in self.local_to_global_node:
-            return self.local_to_global_node[key]
-
-        if self.current_assembly_uid:
-            assembly = self.get_assembly(self.current_assembly_uid)
-        else:
-            assembly = self.create_assembly(observed, page)
-            self.current_assembly_uid = assembly["assembly_uid"]
-
-        self.update_assembly(assembly, observed, page)
-        self.local_to_global_node[key] = assembly["assembly_uid"]
-        return assembly["assembly_uid"]
-
-    def update_part(self, part: Dict[str, Any], observed: Dict[str, Any], page: int) -> None:
-        label = observed.get("manual_label")
-        if label and label not in part["manual_labels"]:
-            part["manual_labels"].append(label)
-        part["last_seen_page"] = max(int(part.get("last_seen_page", page)), page)
-        part["observations"].append({
-            "page_number": page,
-            "local_part_uid": observed.get("part_uid", ""),
-            "visual_description": observed.get("visual_description", ""),
-            "page_position": observed.get("page_position", "unknown")
-        })
-
-    def register_part(self, observed: Dict[str, Any], page: int, page_type: str) -> Optional[str]:
-        local_uid = observed.get("part_uid", "")
-        key = self.local_key(page, local_uid)
-        if key in self.local_to_global_node:
-            return self.local_to_global_node[key]
-
-        if is_tool_like(observed) or is_fastener_like(observed):
-            return None
-
-        # Preserve real inventory quantities as physical objects.
-        if page_type == "parts_list":
-            uids = self.create_inventory_parts(observed, page)
-            if uids:
-                self.local_to_global_node[key] = uids[0]
-                return uids[0]
-
-        if self.is_assembly_observation(observed):
-            return self.register_assembly_observation(observed, page)
-
-        claimed = self.claim_inventory_part(observed, page)
-        if claimed:
-            self.local_to_global_node[key] = claimed
-            return claimed
-
-        part = self.make_part_record(observed, page, 1, 1)
-        self.parts.append(part)
-        self.local_to_global_node[key] = part["part_uid"]
-        return part["part_uid"]
-
-    def register_fastener(self, observed: Dict[str, Any], page: int) -> str:
-        local_uid = observed.get("fastener_uid", "")
-        key = self.local_key(page, local_uid)
-        if key in self.local_to_fastener:
-            return self.local_to_fastener[key]
-
-        label = norm(observed.get("manual_label"))
-        name = norm(observed.get("name"))
-        shape = norm(observed.get("shape_family"))
-
-        for fastener in self.fasteners:
-            labels = [norm(x) for x in fastener.get("manual_labels", [])]
-            if label and label in labels:
-                fastener["last_seen_page"] = page
-                self.local_to_fastener[key] = fastener["fastener_uid"]
-                return fastener["fastener_uid"]
-            if name and name == norm(fastener.get("name")) and shape == norm(fastener.get("shape_family")):
-                fastener["last_seen_page"] = page
-                self.local_to_fastener[key] = fastener["fastener_uid"]
-                return fastener["fastener_uid"]
-
-        uid = self.new_fastener_uid()
-        self.fasteners.append({
-            "fastener_uid": uid,
-            "manual_labels": [observed.get("manual_label", "")] if observed.get("manual_label") else [],
-            "name": observed.get("name") or observed.get("shape_family", "fastener"),
-            "shape_family": observed.get("shape_family", "unknown"),
-            "quantity_total": int(observed.get("quantity_visible", 1) or 1),
-            "geometry_intent": {"primitive": primitive_from_shape(observed.get("shape_family", "unknown"))},
-            "first_seen_page": page,
-            "last_seen_page": page,
-            "observations": [{"page_number": page, "local_fastener_uid": local_uid}]
-        })
-        self.local_to_fastener[key] = uid
-        return uid
-
-    def register_tool(self, observed: Dict[str, Any], page: int) -> str:
-        local_uid = observed.get("tool_uid", "")
-        key = self.local_key(page, local_uid)
-        if key in self.local_to_tool:
-            return self.local_to_tool[key]
-
-        tool_name = norm(observed.get("name"))
-        for tool in self.tools:
-            existing = norm(tool.get("name"))
-            if tool_name == existing:
-                tool["last_seen_page"] = page
-                self.local_to_tool[key] = tool["tool_uid"]
-                return tool["tool_uid"]
-            if ("hex key" in tool_name and "allen key" in existing) or ("allen key" in tool_name and "hex key" in existing):
-                tool["last_seen_page"] = page
-                self.local_to_tool[key] = tool["tool_uid"]
-                return tool["tool_uid"]
-
-        uid = self.new_tool_uid()
-        self.tools.append({"tool_uid": uid, "name": observed.get("name", "tool"), "first_seen_page": page, "last_seen_page": page})
-        self.local_to_tool[key] = uid
-        return uid
-
-    def get_assembly(self, uid: str) -> Dict[str, Any]:
-        for assembly in self.assemblies:
-            if assembly["assembly_uid"] == uid:
-                return assembly
-        raise KeyError(uid)
-
-    def resolve_node(self, local_ref: str, page: int) -> str:
-        if not local_ref:
-            return ""
-        return self.local_to_global_node.get(self.local_key(page, local_ref), "")
-
-    def resolve_fastener(self, local_ref: str, page: int) -> str:
-        if not local_ref:
-            return ""
-        return self.local_to_fastener.get(self.local_key(page, local_ref), "")
-
-    def resolve_tool(self, local_ref: str, page: int) -> str:
-        if not local_ref:
-            return ""
-        return self.local_to_tool.get(self.local_key(page, local_ref), "")
-
-    def add_member_to_assembly(self, assembly_uid: str, member_uid: str, page: int) -> None:
-        if not assembly_uid.startswith("ASM"):
-            return
-        assembly = self.get_assembly(assembly_uid)
-        if member_uid and member_uid != assembly_uid and member_uid not in assembly["members"]:
-            assembly["members"].append(member_uid)
-            assembly["geometry_intent"]["subparts"].append(member_uid)
-            assembly["last_seen_page"] = max(int(assembly.get("last_seen_page", page)), page)
-
-    def create_connection(self, from_node: str, to_node: str, connection_type: str, page: int, action_uid: str, fastener: str, tool: str, confidence: float, evidence: str) -> None:
-        if not from_node or not to_node:
-            self.warnings.append(f"{action_uid}: unresolved endpoint on page {page}")
-            return
-        if from_node == to_node:
-            self.warnings.append(f"{action_uid}: skipped self-connection {from_node}")
-            return
-
-        for existing in self.connections:
-            if existing["from_node_ref"] == from_node and existing["to_node_ref"] == to_node and existing["connection_type"] == connection_type:
-                return
-
-        conn_uid = self.new_connection_uid()
-        self.connections.append({
-            "connection_uid": conn_uid,
-            "from_node_ref": from_node,
-            "to_node_ref": to_node,
-            "connection_type": connection_type,
-            "fasteners": [fastener] if fastener else [],
-            "tool_ref": tool,
-            "created_on_page": page,
-            "created_by_action": action_uid,
-            "confidence": confidence,
-            "visual_evidence": evidence
-        })
-
-        if to_node.startswith("ASM"):
-            self.add_member_to_assembly(to_node, from_node, page)
-        if from_node.startswith("ASM"):
-            self.add_member_to_assembly(from_node, to_node, page)
-
-    def register_action_connection(self, action: Dict[str, Any]) -> None:
-        page = int(action.get("source_page", 0))
-        moving_ref = action.get("moving_ref", "")
-        target_ref = action.get("target_ref", "")
-        fastener_ref = action.get("fastener_ref", "")
-        tool_ref = action.get("tool_ref", "")
-
-        moving_node = self.resolve_node(moving_ref, page)
-        target_node = self.resolve_node(target_ref, page)
-        moving_fastener = self.resolve_fastener(moving_ref, page)
-        fastener = self.resolve_fastener(fastener_ref, page) or moving_fastener
-        tool = self.resolve_tool(tool_ref, page)
-
-        connection_type = action.get("connection_type", "unknown")
+    for action in actions:
         action_uid = action.get("action_uid", "")
-        confidence = float(action.get("confidence", 0.75))
-        evidence = action.get("visual_evidence", "")
+        moving = action.get("moving_ref", "")
+        target = action.get("target_ref", "")
+        fastener = action.get("fastener_ref", "")
+        connection_type = action.get("connection_type", "attached")
 
-        if moving_fastener and target_node:
-            self.create_connection(moving_fastener, target_node, connection_type, page, action_uid, fastener, tool, confidence, evidence)
-            return
+        if not moving or not target:
+            uncertainties.append(f"{action_uid}: skipped missing moving/target")
+            continue
 
-        self.create_connection(moving_node, target_node, connection_type, page, action_uid, fastener, tool, confidence, evidence)
+        if moving == target:
+            uncertainties.append(f"{action_uid}: skipped self-connection {moving}")
+            continue
 
-    def collect_uncertainties(self, page_states: List[Dict[str, Any]], deltas: List[Dict[str, Any]]) -> List[str]:
-        items = []
-        for page in page_states:
-            for uncertainty in page.get("uncertainties", []):
-                items.append(f"Page {page.get('page_number')}: {uncertainty}")
-        for delta in deltas:
-            for warning in delta.get("warnings", []):
-                items.append(f"{delta.get('delta_id')}: {warning}")
-        items.extend(self.warnings)
-        return items
+        key = (moving, target, connection_type)
+        if key in seen and not fastener:
+            uncertainties.append(f"{action_uid}: duplicate connection skipped {moving}->{target}")
+            continue
 
-    def validate_graph(self) -> List[str]:
-        warnings = []
-        node_ids = ({p["part_uid"] for p in self.parts} | {a["assembly_uid"] for a in self.assemblies} | {f["fastener_uid"] for f in self.fasteners})
-        for conn in self.connections:
-            if conn["from_node_ref"] not in node_ids:
-                warnings.append(f"{conn['connection_uid']}: from_node_ref missing: {conn['from_node_ref']}")
-            if conn["to_node_ref"] not in node_ids:
-                warnings.append(f"{conn['connection_uid']}: to_node_ref missing: {conn['to_node_ref']}")
-            if conn["from_node_ref"] == conn["to_node_ref"]:
-                warnings.append(f"{conn['connection_uid']}: self connection detected")
-        for assembly in self.assemblies:
-            for member in assembly.get("members", []):
-                if member not in node_ids:
-                    warnings.append(f"{assembly['assembly_uid']}: member not found: {member}")
-        return warnings
+        # Inferred (synthetic) actions only add links the manual didn't
+        # already state, in either direction.
+        pair = frozenset((moving, target))
+        if action.get("synthetic_reason") and pair in connected_pairs:
+            uncertainties.append(f"{action_uid}: inferred connection already known {moving}<->{target}")
+            continue
 
-    def build(self, page_states: List[Dict[str, Any]], deltas: List[Dict[str, Any]], actions_data: Dict[str, Any]) -> Dict[str, Any]:
-        page_states = sorted(page_states, key=lambda p: int(p.get("page_number", 0)))
+        seen.add(key)
+        connected_pairs.add(pair)
 
-        for page_state in page_states:
-            page = int(page_state.get("page_number", 0))
-            page_type = page_state.get("page_type", "")
-            for part in page_state.get("visible_parts", []):
-                self.register_part(part, page, page_type)
-            for fastener in page_state.get("visible_fasteners", []):
-                self.register_fastener(fastener, page)
-            for tool in page_state.get("visible_tools", []):
-                self.register_tool(tool, page)
+        conn_uid = f"CONN{counter:04d}"
+        counter += 1
 
-        for action in actions_data.get("actions", []):
-            self.register_action_connection(action)
+        fasteners: List[str] = []
+        if fastener:
+            fasteners.append(fastener)
+        elif moving.startswith("FAST"):
+            fasteners.append(moving)
 
-        product_hint = {"name": "unknown", "category": "unknown", "confidence": 0.0}
-        for page_state in page_states:
-            if page_state.get("page_type") == "cover" and page_state.get("final_visible_structure"):
-                product_hint = {"name": page_state.get("final_visible_structure"), "category": "unknown", "confidence": 0.6}
-                break
+        connections.append({
+            "connection_uid": conn_uid,
+            "from_node_ref": moving,
+            "to_node_ref": target,
+            "connection_type": connection_type,
+            "fasteners": fasteners,
+            "tool_ref": action.get("tool_ref", ""),
+            "created_on_page": action.get("source_page"),
+            "created_by_action": action_uid,
+            "confidence": action.get("confidence", 0.65),
+            "visual_evidence": action.get("visual_evidence", ""),
+        })
+        assembly_order.append(conn_uid)
 
-        validation_warnings = self.validate_graph()
-
-        return {
-            "graph_id": "assembly_graph_v2_001",
-            "schema_version": "2.3",
-            "product_hint": product_hint,
-            "parts": self.parts,
-            "assemblies": self.assemblies,
-            "connections": self.connections,
-            "fasteners": self.fasteners,
-            "tools": self.tools,
-            "assembly_order": [c["connection_uid"] for c in self.connections],
-            "debug": {
-                "inventory_label_to_parts": self.inventory_label_to_parts,
-                "inventory_name_to_parts": self.inventory_name_to_parts
-            },
-            "uncertainties": self.collect_uncertainties(page_states, deltas) + validation_warnings
-        }
+    return connections, assembly_order, uncertainties
 
 
-def build_universal_graph(page_states_path: Path = PAGE_STATES_PATH, assembly_deltas_path: Path = ASSEMBLY_DELTAS_PATH, assembly_actions_path: Path = ASSEMBLY_ACTIONS_PATH, output_path: Path = OUTPUT_PATH) -> Dict[str, Any]:
+def build_primary_assembly(
+    page_states: List[Dict[str, Any]],
+    connections: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    product_hint = "Primary Assembly"
+
+    for page in page_states:
+        if page.get("final_visible_structure"):
+            product_hint = page.get("final_visible_structure")
+            break
+
+    members: List[str] = []
+
+    for conn in connections:
+        for key in ["from_node_ref", "to_node_ref"]:
+            ref = conn.get(key, "")
+            if ref.startswith(("OBJ", "FAST")) and ref not in members:
+                members.append(ref)
+
+        for fastener in conn.get("fasteners", []):
+            if fastener and fastener not in members:
+                members.append(fastener)
+
+    category = infer_category(product_hint)
+
+    return {
+        "assembly_uid": "ASM0001",
+        "canonical_name": f"{category.title()} Assembly" if category != "unknown" else "Primary Assembly",
+        "shape_family": "assembly",
+        "material_hint": "mixed",
+        "geometry_intent": {
+            "primitive": "composite",
+            "is_composite": True,
+            "subparts": members,
+        },
+        "members": members,
+        "first_seen_page": min([c.get("created_on_page", 9999) or 9999 for c in connections] or [1]),
+        "last_seen_page": max([c.get("created_on_page", 1) or 1 for c in connections] or [1]),
+        "observations": [],
+        "confidence": 0.72,
+    }
+
+
+def build_graph(
+    page_states_path: Path = PAGE_STATES_PATH,
+    output_path: Path = OUTPUT_PATH,
+) -> Dict[str, Any]:
     page_states = load_json(page_states_path)
-    deltas = load_json(assembly_deltas_path)
-    actions_data = load_json(assembly_actions_path)
+    identity_lookup = load_identity_lookup()
 
-    builder = UniversalGraphBuilder()
-    graph = builder.build(page_states, deltas, actions_data)
+    actions_json = load_best_actions()
+    actions = actions_json.get("actions", [])
+
+    parts = collect_inventory_parts(page_states)
+    add_page_observations(parts, page_states, identity_lookup)
+
+    fasteners, tools = collect_fasteners_and_tools(page_states)
+    connections, assembly_order, uncertainties = build_connections_from_actions(actions)
+    primary_assembly = build_primary_assembly(page_states, connections)
+
+    product_name = "unknown"
+    for page in page_states:
+        if page.get("final_visible_structure"):
+            product_name = page.get("final_visible_structure")
+            break
+
+    graph = {
+        "graph_id": "assembly_graph_v2_001",
+        "schema_version": "2.4",
+        "product_hint": {
+            "name": product_name,
+            "category": infer_category(product_name),
+            "confidence": 0.65 if product_name != "unknown" else 0.3,
+        },
+        "parts": parts,
+        "assemblies": [primary_assembly],
+        "connections": connections,
+        "fasteners": fasteners,
+        "tools": tools,
+        "assembly_order": assembly_order,
+        "debug": {
+            "actions_source": str(RESOLVED_ACTIONS_PATH if RESOLVED_ACTIONS_PATH.exists() else RAW_ACTIONS_PATH),
+            "identity_map_used": IDENTITY_MAP_PATH.exists(),
+            "parts_count": len(parts),
+            "fasteners_count": len(fasteners),
+            "tools_count": len(tools),
+            "connections_count": len(connections),
+            "resolved_actions_count": len(actions),
+            "identity_lookup": identity_lookup,
+        },
+        "uncertainties": actions_json.get("warnings", []) + uncertainties,
+    }
 
     save_json(graph, output_path)
 
-    print(f"Saved universal assembly graph to {output_path}")
-    print(f"Parts: {len(graph.get('parts', []))}")
-    print(f"Assemblies: {len(graph.get('assemblies', []))}")
-    print(f"Fasteners: {len(graph.get('fasteners', []))}")
-    print(f"Tools: {len(graph.get('tools', []))}")
-    print(f"Connections: {len(graph.get('connections', []))}")
-    print(f"Assembly order steps: {len(graph.get('assembly_order', []))}")
-    print(f"Uncertainties: {len(graph.get('uncertainties', []))}")
+    print()
+    print("Universal Graph Summary")
+    print("-----------------------")
+    print(f"Parts: {len(parts)}")
+    print(f"Assemblies: {len(graph['assemblies'])}")
+    print(f"Connections: {len(connections)}")
+    print(f"Assembly order: {len(assembly_order)}")
+    print(f"Fasteners: {len(fasteners)}")
+    print(f"Tools: {len(tools)}")
+    print(f"Actions source: {graph['debug']['actions_source']}")
+    print(f"Identity map used: {graph['debug']['identity_map_used']}")
+    print(f"Uncertainties: {len(graph['uncertainties'])}")
+    print()
 
     return graph
 
 
 if __name__ == "__main__":
-    build_universal_graph()
+    result = build_graph()
+
+    if not result["connections"]:
+        sys.exit(
+            f"ERROR: the assembly graph has no connections "
+            f"({result['debug']['resolved_actions_count']} actions read), so there is "
+            "nothing to animate. Check the earlier stages' output."
+        )

@@ -1,11 +1,11 @@
 import json
 import re
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 
 PAGE_STATES_PATH = Path("v2/outputs/json/page_states.json")
-ASSEMBLY_DELTAS_PATH = Path("v2/outputs/json/assembly_deltas.json")
 OUTPUT_PATH = Path("v2/outputs/json/assembly_actions.json")
 
 
@@ -43,12 +43,42 @@ def action_to_connection_type(action_type: str) -> str:
     return "unknown"
 
 
-def label_in_text(label: str, text: str) -> bool:
+# Words that introduce a short label: "part 2", "fitting A", "no. 3", "#4".
+SHORT_LABEL_PREFIX = r"(?:\b(?:part|item|fitting|fastener|label|number|no\.?)\s*|#\s*)"
+
+
+def label_in_text(label: Any, text: str) -> bool:
+    """Whether `text` refers to the manual label `label`.
+
+    A short label ("A", "2") is also an ordinary word or count ("a rail",
+    "4 dowels"), so it only counts when written as a label: in brackets,
+    after a word like "part" or "fitting", or, for a capital letter, as a
+    capital standing on its own mid-sentence ("insert dowel A")."""
+    label = str(label or "").strip()
     if not label:
         return False
 
-    label = re.escape(str(label).strip())
-    return re.search(rf"\b{label}\b", text, re.IGNORECASE) is not None
+    escaped = re.escape(label)
+
+    if len(label) > 2:
+        return re.search(rf"\b{escaped}\b", text, re.IGNORECASE) is not None
+
+    patterns = [
+        rf"\(\s*{escaped}\s*\)",
+        rf"\[\s*{escaped}\s*\]",
+        rf"{SHORT_LABEL_PREFIX}{escaped}(?!\w)",
+    ]
+    if any(re.search(pattern, text, re.IGNORECASE) for pattern in patterns):
+        return True
+
+    if label.isalpha() and label.isupper():
+        for match in re.finditer(rf"\b{escaped}\b", text):
+            before = text[:match.start()].rstrip()
+            # At the start of a sentence a capital "A" is the article.
+            if before and before[-1] not in ".!?:;":
+                return True
+
+    return False
 
 
 def part_exists(page: Dict[str, Any], ref: str) -> bool:
@@ -156,6 +186,12 @@ def find_mentioned_parts(page: Dict[str, Any], evidence: str) -> List[Tuple[int,
         if shape and shape in evidence_n:
             score += 2
 
+        # The bonuses below only rank parts that the evidence actually
+        # mentions; without this every frame/panel/beam on the page counted
+        # as "mentioned".
+        if score == 0:
+            continue
+
         if "assembled" in name or "assembled" in desc:
             score += 4
         if "frame" in name or shape == "frame":
@@ -172,6 +208,35 @@ def find_mentioned_parts(page: Dict[str, Any], evidence: str) -> List[Tuple[int,
     return results
 
 
+def base_score(part: Dict[str, Any]) -> int:
+    """How much a part looks like the thing others get attached TO."""
+    text = norm(
+        f"{part.get('name')} {part.get('visual_description')} {part.get('shape_family')}"
+    )
+
+    score = 0
+
+    if "assembled" in text:
+        score += 8
+    if "frame" in text:
+        score += 6
+    if "structure" in text:
+        score += 5
+    if "panel" in text:
+        score += 3
+    if "beam" in text:
+        score += 2
+
+    return score
+
+
+def part_by_uid(page: Dict[str, Any], uid: str) -> Dict[str, Any]:
+    return next(
+        (p for p in page.get("visible_parts", []) if p.get("part_uid") == uid),
+        {},
+    )
+
+
 def choose_target_from_page(page: Dict[str, Any], moving_ref: str = "") -> str:
     candidates = []
 
@@ -180,22 +245,7 @@ def choose_target_from_page(page: Dict[str, Any], moving_ref: str = "") -> str:
         if not uid or uid == moving_ref:
             continue
 
-        text = norm(
-            f"{part.get('name')} {part.get('visual_description')} {part.get('shape_family')}"
-        )
-
-        score = 0
-
-        if "assembled" in text:
-            score += 8
-        if "frame" in text:
-            score += 6
-        if "structure" in text:
-            score += 5
-        if "panel" in text:
-            score += 3
-        if "beam" in text:
-            score += 2
+        score = base_score(part)
 
         if score > 0:
             candidates.append((score, uid))
@@ -292,149 +342,141 @@ def build_action(
     return action
 
 
+def infer_structural_pair(
+    page: Dict[str, Any],
+    observed: Dict[str, Any],
+) -> Tuple[str, str, str, float]:
+    """(moving, target, reason, confidence) for a part-to-part link implied by the
+    evidence text when the model only reported a fastener action, or
+    ("", "", "", 0.0) when nothing can be inferred."""
+    mentioned = [uid for _, uid in find_mentioned_parts(page, observed.get("visual_evidence", ""))]
+
+    if len(mentioned) >= 2:
+        first, second = mentioned[0], mentioned[1]
+        # The more base-like part (frame, panel, assembled structure) is
+        # the one being attached to, whatever order the text names them in.
+        reason = "MVP structural action inferred from multiple visible parts mentioned in visual evidence."
+        if base_score(part_by_uid(page, first)) > base_score(part_by_uid(page, second)):
+            return second, first, reason, 0.72
+        return first, second, reason, 0.72
+
+    if len(mentioned) == 1:
+        target = choose_target_from_page(page, mentioned[0])
+        if target and target != mentioned[0]:
+            return mentioned[0], target, "MVP structural action inferred from one mentioned part and strongest visible target.", 0.58
+
+    return "", "", "", 0.0
+
+
 def extract_actions(page_states: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     actions = []
     action_counter = 1
     seen_pairs = set()
 
     for page in page_states:
-        page_number = int(page.get("page_number", 0))
+        page_number = int(page.get("page_number") or 0)
 
-        if page.get("page_type") != "assembly_step":
+        if norm(page.get("page_type")) != "assembly_step":
             continue
 
-        for observed in page.get("observed_actions", []):
+        observed_actions = page.get("observed_actions", [])
+        resolved_by_index = [resolve_fastener_action_refs(page, observed) for observed in observed_actions]
+
+        # Part pairs the page states directly, in either direction. Inferred
+        # links below never duplicate or reverse one of these.
+        stated_part_pairs = {
+            frozenset((r["moving_ref"], r["target_ref"]))
+            for r in resolved_by_index
+            if part_exists(page, r["moving_ref"]) and part_exists(page, r["target_ref"])
+        }
+
+        # 1) Actions as reported (part or fastener moving onto a part).
+        for observed, resolved in zip(observed_actions, resolved_by_index):
             action_type = observed.get("action_type", "unknown")
-            direction_hint = observed.get("direction_hint", "unknown")
-            visual_evidence = observed.get("visual_evidence", "")
-
-            # 1) Existing fastener/tool action
-            resolved = resolve_fastener_action_refs(page, observed)
-
             moving_ref = resolved["moving_ref"]
             target_ref = resolved["target_ref"]
             fastener_ref = resolved["fastener_ref"]
-            tool_ref = resolved["tool_ref"]
 
-            if moving_ref and target_ref:
-                pair_key = (page_number, action_type, moving_ref, target_ref, fastener_ref)
+            if not (moving_ref and target_ref) or moving_ref == target_ref:
+                continue
 
-                if pair_key not in seen_pairs:
-                    actions.append(
-                        build_action(
-                            action_uid=f"ACT{action_counter:04d}",
-                            source_page=page_number,
-                            action_type=action_type,
-                            moving_ref=moving_ref,
-                            target_ref=target_ref,
-                            fastener_ref=fastener_ref,
-                            tool_ref=tool_ref,
-                            direction_hint=direction_hint,
-                            visual_evidence=visual_evidence,
-                            confidence=0.65,
-                            page=page,
-                            synthetic_reason=""
-                        )
-                    )
-                    seen_pairs.add(pair_key)
-                    action_counter += 1
+            pair_key = (page_number, action_type, moving_ref, target_ref, fastener_ref)
 
-            # 2) NEW MVP structural part-to-part action
-            mentioned_parts = find_mentioned_parts(page, visual_evidence)
+            if pair_key in seen_pairs:
+                continue
 
-            if len(mentioned_parts) >= 2:
-                structural_moving = mentioned_parts[0][1]
-                structural_target = mentioned_parts[1][1]
+            actions.append(
+                build_action(
+                    action_uid=f"ACT{action_counter:04d}",
+                    source_page=page_number,
+                    action_type=action_type,
+                    moving_ref=moving_ref,
+                    target_ref=target_ref,
+                    fastener_ref=fastener_ref,
+                    tool_ref=resolved["tool_ref"],
+                    direction_hint=observed.get("direction_hint", "unknown"),
+                    visual_evidence=observed.get("visual_evidence", ""),
+                    confidence=0.65,
+                    page=page,
+                    synthetic_reason=""
+                )
+            )
+            seen_pairs.add(pair_key)
+            action_counter += 1
 
-                if structural_moving != structural_target:
-                    structural_type = action_type
+        # 2) MVP structural part-to-part actions. Models often report only
+        # "screw goes into rail" and never "rail onto tabletop"; without a
+        # part-to-part link no structural part would ever move.
+        for observed, resolved in zip(observed_actions, resolved_by_index):
+            structural_moving, structural_target, reason, confidence = infer_structural_pair(page, observed)
 
-                    if structural_type in {"tighten", "insert"}:
-                        structural_type = "attach"
+            if not reason:
+                continue
 
-                    pair_key = (
-                        page_number,
-                        "structural",
-                        structural_type,
-                        structural_moving,
-                        structural_target,
-                    )
+            if frozenset((structural_moving, structural_target)) in stated_part_pairs:
+                continue
 
-                    if pair_key not in seen_pairs:
-                        actions.append(
-                            build_action(
-                                action_uid=f"ACT{action_counter:04d}",
-                                source_page=page_number,
-                                action_type=structural_type,
-                                moving_ref=structural_moving,
-                                target_ref=structural_target,
-                                fastener_ref=fastener_ref,
-                                tool_ref=tool_ref,
-                                direction_hint=direction_hint,
-                                visual_evidence=visual_evidence,
-                                confidence=0.72,
-                                page=page,
-                                synthetic_reason="MVP structural action inferred from multiple visible parts mentioned in visual evidence."
-                            )
-                        )
-                        seen_pairs.add(pair_key)
-                        action_counter += 1
+            structural_type = observed.get("action_type", "unknown")
 
-            # 3) If only one part is mentioned and there are multiple parts on page,
-            # create a conservative structural action from that part to best target.
-            elif len(mentioned_parts) == 1:
-                structural_moving = mentioned_parts[0][1]
-                structural_target = choose_target_from_page(page, structural_moving)
+            if structural_type in {"tighten", "insert"}:
+                structural_type = "attach"
 
-                if structural_moving and structural_target and structural_moving != structural_target:
-                    structural_type = action_type
+            pair_key = (page_number, "structural", structural_moving, structural_target)
 
-                    if structural_type in {"tighten", "insert"}:
-                        structural_type = "attach"
+            if pair_key in seen_pairs:
+                continue
 
-                    pair_key = (
-                        page_number,
-                        "structural_single",
-                        structural_type,
-                        structural_moving,
-                        structural_target,
-                    )
-
-                    if pair_key not in seen_pairs:
-                        actions.append(
-                            build_action(
-                                action_uid=f"ACT{action_counter:04d}",
-                                source_page=page_number,
-                                action_type=structural_type,
-                                moving_ref=structural_moving,
-                                target_ref=structural_target,
-                                fastener_ref=fastener_ref,
-                                tool_ref=tool_ref,
-                                direction_hint=direction_hint,
-                                visual_evidence=visual_evidence,
-                                confidence=0.58,
-                                page=page,
-                                synthetic_reason="MVP structural action inferred from one mentioned part and strongest visible target."
-                            )
-                        )
-                        seen_pairs.add(pair_key)
-                        action_counter += 1
+            actions.append(
+                build_action(
+                    action_uid=f"ACT{action_counter:04d}",
+                    source_page=page_number,
+                    action_type=structural_type,
+                    moving_ref=structural_moving,
+                    target_ref=structural_target,
+                    fastener_ref=resolved["fastener_ref"],
+                    tool_ref=resolved["tool_ref"],
+                    direction_hint=observed.get("direction_hint", "unknown"),
+                    visual_evidence=observed.get("visual_evidence", ""),
+                    confidence=confidence,
+                    page=page,
+                    synthetic_reason=reason
+                )
+            )
+            seen_pairs.add(pair_key)
+            stated_part_pairs.add(frozenset((structural_moving, structural_target)))
+            action_counter += 1
 
     return actions
 
 
 def build_assembly_actions(
     page_states_path: Path = PAGE_STATES_PATH,
-    assembly_deltas_path: Path = ASSEMBLY_DELTAS_PATH,
     output_path: Path = OUTPUT_PATH,
 ) -> Dict[str, Any]:
     page_states = load_json(page_states_path)
 
     if not isinstance(page_states, list):
         raise ValueError("page_states.json must contain a list.")
-
-    if assembly_deltas_path.exists():
-        _ = load_json(assembly_deltas_path)
 
     actions = extract_actions(page_states)
 
@@ -467,4 +509,10 @@ def build_assembly_actions(
 
 
 if __name__ == "__main__":
-    build_assembly_actions()
+    result = build_assembly_actions()
+
+    if not result["actions"]:
+        sys.exit(
+            "ERROR: no assembly actions could be extracted from page_states.json, so there "
+            "is nothing to animate. Check that assembly_step pages have observed_actions."
+        )

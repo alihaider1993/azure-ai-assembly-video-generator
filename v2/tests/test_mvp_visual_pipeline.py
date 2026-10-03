@@ -47,6 +47,9 @@ def test_shape_types_are_valid():
         "rounded_panel",
         "rectangular_beam",
         "proxy_block",
+        "curved_frame",
+        "bracket",
+        "washer",
     }
 
     for part in data["parts"]:

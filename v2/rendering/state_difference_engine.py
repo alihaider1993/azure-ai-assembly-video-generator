@@ -1,4 +1,5 @@
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -250,5 +251,33 @@ def build_assembly_deltas(
     return deltas
 
 
+def empty_input_reason(page_states: List[Dict[str, Any]]) -> str:
+    """Why page_states.json has nothing to animate, or "" if it does."""
+    if not page_states:
+        return "page_states.json is empty"
+
+    if any(page.get("observed_actions") for page in page_states):
+        return ""
+
+    page_types = [norm(page.get("page_type")) for page in page_states]
+    reasons = [
+        f"page {page.get('page_number')}: {note}"
+        for page in page_states
+        for note in page.get("uncertainties", [])
+        if "failed" in norm(note)
+    ]
+    detail = "; ".join(reasons[:3]) if reasons else f"page types were {page_types}"
+
+    return f"no page in page_states.json has any observed_actions ({detail})"
+
+
 if __name__ == "__main__":
+    states = load_json(PAGE_STATES_PATH)
     build_assembly_deltas()
+
+    reason = empty_input_reason(states if isinstance(states, list) else [])
+    if reason:
+        sys.exit(
+            f"ERROR: {reason}. The page analysis stage produced nothing to animate; "
+            "fix it (e.g. the Azure OpenAI vision calls) before running later stages."
+        )

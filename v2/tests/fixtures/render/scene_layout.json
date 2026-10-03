@@ -1,0 +1,553 @@
+{
+  "schema_version": "2.2",
+  "scene_objects": [
+    {
+      "node_uid": "ASM0001",
+      "node_type": "assembly",
+      "name": "Primary Assembly",
+      "geometry_uid": "",
+      "start_position": [
+        0.0,
+        0.0,
+        1.2
+      ],
+      "final_position": [
+        0.0,
+        0.0,
+        1.2
+      ],
+      "exploded_position": [
+        0.0,
+        0.0,
+        1.2
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "",
+      "is_moving": false,
+      "is_target": false,
+      "first_motion_step": "",
+      "visible": true
+    },
+    {
+      "node_uid": "FAST0001",
+      "node_type": "fastener",
+      "name": "Screw M6x30mm",
+      "geometry_uid": "",
+      "start_position": [
+        1.65,
+        0.0,
+        2.45
+      ],
+      "final_position": [
+        0.3,
+        0.0,
+        1.15
+      ],
+      "exploded_position": [
+        1.65,
+        0.0,
+        2.45
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "OBJ0001",
+      "is_moving": true,
+      "is_target": false,
+      "first_motion_step": "M0001",
+      "visible": true
+    },
+    {
+      "node_uid": "FAST0002",
+      "node_type": "fastener",
+      "name": "Corner bracket",
+      "geometry_uid": "",
+      "start_position": [
+        1.65,
+        -0.96,
+        2.55
+      ],
+      "final_position": [
+        0.3,
+        -0.96,
+        1.25
+      ],
+      "exploded_position": [
+        1.65,
+        -0.96,
+        2.55
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "OBJ0002",
+      "is_moving": true,
+      "is_target": false,
+      "first_motion_step": "M0003",
+      "visible": true
+    },
+    {
+      "node_uid": "FAST0003",
+      "node_type": "fastener",
+      "name": "Bolt M8x40mm",
+      "geometry_uid": "",
+      "start_position": [
+        -1.65,
+        0.0,
+        2.45
+      ],
+      "final_position": [
+        -0.3,
+        0.0,
+        1.15
+      ],
+      "exploded_position": [
+        -1.65,
+        0.0,
+        2.45
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "OBJ0001",
+      "is_moving": true,
+      "is_target": false,
+      "first_motion_step": "M0005",
+      "visible": true
+    },
+    {
+      "node_uid": "FAST0004",
+      "node_type": "fastener",
+      "name": "Spring washer",
+      "geometry_uid": "",
+      "start_position": [
+        0.0,
+        1.65,
+        2.3
+      ],
+      "final_position": [
+        0.0,
+        0.3,
+        1.1
+      ],
+      "exploded_position": [
+        0.0,
+        1.65,
+        2.3
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "OBJ0001",
+      "is_moving": true,
+      "is_target": false,
+      "first_motion_step": "M0005",
+      "visible": true
+    },
+    {
+      "node_uid": "OBJ0001",
+      "node_type": "part",
+      "name": "Tabletop",
+      "geometry_uid": "G0001",
+      "start_position": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "final_position": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "exploded_position": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "ASM0001",
+      "is_moving": false,
+      "is_target": true,
+      "first_motion_step": "M0001",
+      "visible": true
+    },
+    {
+      "node_uid": "OBJ0002",
+      "node_type": "part",
+      "name": "Long side rail 1/2",
+      "geometry_uid": "G0002",
+      "start_position": [
+        0.0,
+        -5.279999999999999,
+        2.3
+      ],
+      "final_position": [
+        0.0,
+        -0.96,
+        1.1
+      ],
+      "exploded_position": [
+        0.0,
+        -5.279999999999999,
+        2.3
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "OBJ0001",
+      "is_moving": true,
+      "is_target": true,
+      "first_motion_step": "M0001",
+      "visible": true
+    },
+    {
+      "node_uid": "OBJ0003",
+      "node_type": "part",
+      "name": "Long side rail 2/2",
+      "geometry_uid": "G0003",
+      "start_position": [
+        3.6959999999999993,
+        3.6959999999999993,
+        2.6
+      ],
+      "final_position": [
+        0.6719999999999999,
+        0.6719999999999999,
+        1.2
+      ],
+      "exploded_position": [
+        3.6959999999999993,
+        3.6959999999999993,
+        2.6
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "OBJ0001",
+      "is_moving": true,
+      "is_target": true,
+      "first_motion_step": "M0002",
+      "visible": true
+    },
+    {
+      "node_uid": "OBJ0004",
+      "node_type": "part",
+      "name": "Short end rail 1/2",
+      "geometry_uid": "G0004",
+      "start_position": [
+        -5.279999999999999,
+        -0.96,
+        2.55
+      ],
+      "final_position": [
+        -0.96,
+        -0.96,
+        1.25
+      ],
+      "exploded_position": [
+        -5.279999999999999,
+        -0.96,
+        2.55
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "OBJ0002",
+      "is_moving": true,
+      "is_target": false,
+      "first_motion_step": "M0003",
+      "visible": true
+    },
+    {
+      "node_uid": "OBJ0005",
+      "node_type": "part",
+      "name": "Short end rail 2/2",
+      "geometry_uid": "G0005",
+      "start_position": [
+        5.951999999999999,
+        0.6719999999999999,
+        2.65
+      ],
+      "final_position": [
+        1.632,
+        0.6719999999999999,
+        1.3499999999999999
+      ],
+      "exploded_position": [
+        5.951999999999999,
+        0.6719999999999999,
+        2.65
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "OBJ0003",
+      "is_moving": true,
+      "is_target": false,
+      "first_motion_step": "M0004",
+      "visible": true
+    },
+    {
+      "node_uid": "OBJ0006",
+      "node_type": "part",
+      "name": "Leg 1/4",
+      "geometry_uid": "G0006",
+      "start_position": [
+        -3.234,
+        3.234,
+        2.6
+      ],
+      "final_position": [
+        -0.588,
+        0.588,
+        1.2
+      ],
+      "exploded_position": [
+        -3.234,
+        3.234,
+        2.6
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "OBJ0001",
+      "is_moving": true,
+      "is_target": false,
+      "first_motion_step": "M0005",
+      "visible": true
+    },
+    {
+      "node_uid": "OBJ0007",
+      "node_type": "part",
+      "name": "Leg 2/4",
+      "geometry_uid": "G0007",
+      "start_position": [
+        3.234,
+        -3.234,
+        2.6
+      ],
+      "final_position": [
+        0.588,
+        -0.588,
+        1.2
+      ],
+      "exploded_position": [
+        3.234,
+        -3.234,
+        2.6
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "OBJ0001",
+      "is_moving": true,
+      "is_target": false,
+      "first_motion_step": "M0006",
+      "visible": true
+    },
+    {
+      "node_uid": "OBJ0008",
+      "node_type": "part",
+      "name": "Leg 3/4",
+      "geometry_uid": "G0008",
+      "start_position": [
+        -3.234,
+        -3.234,
+        2.6
+      ],
+      "final_position": [
+        -0.588,
+        -0.588,
+        1.2
+      ],
+      "exploded_position": [
+        -3.234,
+        -3.234,
+        2.6
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "OBJ0001",
+      "is_moving": true,
+      "is_target": false,
+      "first_motion_step": "M0007",
+      "visible": true
+    },
+    {
+      "node_uid": "OBJ0009",
+      "node_type": "part",
+      "name": "Leg 4/4",
+      "geometry_uid": "G0009",
+      "start_position": [
+        4.62,
+        0.0,
+        2.45
+      ],
+      "final_position": [
+        0.84,
+        0.0,
+        1.15
+      ],
+      "exploded_position": [
+        4.62,
+        0.0,
+        2.45
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "OBJ0001",
+      "is_moving": true,
+      "is_target": false,
+      "first_motion_step": "M0008",
+      "visible": true
+    }
+  ],
+  "camera": {
+    "position": [
+      6.0,
+      -8.0,
+      5.0
+    ],
+    "target": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "lens": 35
+  },
+  "render": {
+    "resolution_x": 1280,
+    "resolution_y": 720,
+    "fps": 24,
+    "total_frames": 325
+  },
+  "debug": {
+    "moving_nodes": [
+      "FAST0001",
+      "FAST0002",
+      "FAST0003",
+      "FAST0004",
+      "OBJ0002",
+      "OBJ0003",
+      "OBJ0004",
+      "OBJ0005",
+      "OBJ0006",
+      "OBJ0007",
+      "OBJ0008",
+      "OBJ0009"
+    ],
+    "target_nodes": [
+      "OBJ0001",
+      "OBJ0002",
+      "OBJ0003"
+    ],
+    "primary_assembly": "ASM0001",
+    "connected_node_count": 13,
+    "fallback_node_count": 1
+  },
+  "warnings": []
+}

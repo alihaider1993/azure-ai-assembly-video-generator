@@ -6,11 +6,15 @@ from typing import Any, Dict, List
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from services.foundry import FoundryClient
+from services.foundry import FoundryClient, FoundryConfigError
 
 
 PAGES_DIR = Path("temp/pages")
 OUTPUT_PATH = Path("v2/outputs/json/diagram_analysis.json")
+
+
+class DiagramAnalysisError(RuntimeError):
+    """Every page failed, so the output would be empty."""
 
 
 def extract_json(text: str) -> Dict[str, Any]:
@@ -101,6 +105,8 @@ Rules:
 
         raw = self.ai.vision(image_path=image_path, prompt=prompt)
         data = extract_json(raw)
+        # The page number comes from the file name; the model's value is not trusted.
+        data["page_number"] = page_number
         return self.validate(data, page_number)
 
     def validate(self, data: Dict[str, Any], page_number: int) -> Dict[str, Any]:
@@ -112,8 +118,10 @@ Rules:
         data.setdefault("uncertainties", [])
 
         validated_diagrams = []
+        diagrams = data.get("diagrams")
+        diagrams = [d for d in diagrams if isinstance(d, dict)] if isinstance(diagrams, list) else []
 
-        for idx, diagram in enumerate(data.get("diagrams", []), start=1):
+        for idx, diagram in enumerate(diagrams, start=1):
             diagram.setdefault("diagram_uid", "")
             diagram["diagram_uid"] = f"D{page_number:03d}_{idx:03d}"
 
@@ -128,18 +136,24 @@ Rules:
 
             region = diagram["page_region"]
 
-            for key in ["x_min", "y_min", "x_max", "y_max"]:
+            if not isinstance(region, dict):
+                region = {}
+
+            for key, default in [("x_min", 0.0), ("y_min", 0.0), ("x_max", 1.0), ("y_max", 1.0)]:
                 try:
-                    region[key] = max(0.0, min(1.0, float(region.get(key, 0.0))))
-                except Exception:
-                    region[key] = 0.0
+                    region[key] = max(0.0, min(1.0, float(region.get(key, default))))
+                except (TypeError, ValueError):
+                    region[key] = default
+
+            diagram["page_region"] = region
 
             diagram.setdefault("contains_parts", False)
             diagram.setdefault("contains_fasteners", False)
             diagram.setdefault("contains_tools", False)
             diagram.setdefault("contains_arrows", False)
             diagram.setdefault("contains_labels", False)
-            diagram.setdefault("visible_labels", [])
+            if not isinstance(diagram.get("visible_labels"), list):
+                diagram["visible_labels"] = []
             diagram.setdefault("likely_action", "unknown")
             diagram.setdefault("visual_complexity", "medium")
             diagram.setdefault("confidence", 0.5)
@@ -172,6 +186,7 @@ def run_diagram_analysis(
         raise FileNotFoundError(f"No page images found in {pages_dir}")
 
     results = []
+    failed_pages: List[int] = []
 
     for page in pages:
         page_number = int(page.stem.split("_")[1])
@@ -180,8 +195,11 @@ def run_diagram_analysis(
         try:
             result = agent.analyze_page(str(page), page_number)
             results.append(result)
+        except FoundryConfigError:
+            raise
         except Exception as e:
             print(f"ERROR on page {page_number}: {e}")
+            failed_pages.append(page_number)
             results.append({
                 "page_number": page_number,
                 "page_type": "unknown",
@@ -210,8 +228,19 @@ def run_diagram_analysis(
     print(f"Assembly diagrams: {assembly_diagrams}")
     print(f"Saved to: {output_path}")
 
+    if len(failed_pages) == len(results):
+        raise DiagramAnalysisError(
+            f"Every page failed diagram analysis (pages {failed_pages}). "
+            "See the ERROR lines above."
+        )
+
     return results
 
 
 if __name__ == "__main__":
-    run_diagram_analysis()
+    try:
+        run_diagram_analysis()
+    except (FoundryConfigError, DiagramAnalysisError) as e:
+        print("", file=sys.stderr)
+        print(f"[FATAL] Diagram analysis stopped: {e}", file=sys.stderr)
+        sys.exit(2)

@@ -1,0 +1,828 @@
+{
+  "schema_version": "2.0",
+  "units": "meters",
+  "objects": [
+    {
+      "geometry_uid": "G0001",
+      "part_ref": "OBJ0001",
+      "semantic_geometry": {
+        "type": "panel",
+        "role": "structural",
+        "is_composite": false,
+        "symmetry": "bilateral",
+        "estimated_scale": "medium"
+      },
+      "primitive_geometry": [
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.2,
+            0.08,
+            0.8
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "material": {
+        "category": "wood",
+        "color_hint": "light",
+        "finish": "matte"
+      },
+      "origin": {
+        "pivot": "center",
+        "initial_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "assembly_anchor": {
+        "type": "center",
+        "local_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "bounding_box": {
+        "width": 1.2,
+        "height": 0.8,
+        "depth": 0.08
+      },
+      "render_metadata": {
+        "lod": "medium",
+        "subdivision": 0,
+        "bevel": true,
+        "motion_refs": [],
+        "source_pages": [
+          4
+        ]
+      }
+    },
+    {
+      "geometry_uid": "G0002",
+      "part_ref": "OBJ0002",
+      "semantic_geometry": {
+        "type": "frame",
+        "role": "structural",
+        "is_composite": true,
+        "symmetry": "bilateral",
+        "estimated_scale": "medium"
+      },
+      "primitive_geometry": [
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.4,
+            0.12,
+            0.12
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.4,
+            0.12,
+            0.12
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            -0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "primitive": "cuboid",
+          "size": [
+            0.12,
+            0.12,
+            1.4
+          ],
+          "offset": [
+            -0.7,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "primitive": "cuboid",
+          "size": [
+            0.12,
+            0.12,
+            1.4
+          ],
+          "offset": [
+            0.7,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "material": {
+        "category": "metal",
+        "color_hint": "neutral",
+        "finish": "matte"
+      },
+      "origin": {
+        "pivot": "center",
+        "initial_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "assembly_anchor": {
+        "type": "center",
+        "local_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "bounding_box": {
+        "width": 1.4,
+        "height": 1.4,
+        "depth": 0.12
+      },
+      "render_metadata": {
+        "lod": "medium",
+        "subdivision": 0,
+        "bevel": true,
+        "motion_refs": [],
+        "source_pages": [
+          4
+        ]
+      }
+    },
+    {
+      "geometry_uid": "G0003",
+      "part_ref": "OBJ0003",
+      "semantic_geometry": {
+        "type": "frame",
+        "role": "structural",
+        "is_composite": true,
+        "symmetry": "bilateral",
+        "estimated_scale": "medium"
+      },
+      "primitive_geometry": [
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.4,
+            0.12,
+            0.12
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.4,
+            0.12,
+            0.12
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            -0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "primitive": "cuboid",
+          "size": [
+            0.12,
+            0.12,
+            1.4
+          ],
+          "offset": [
+            -0.7,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "primitive": "cuboid",
+          "size": [
+            0.12,
+            0.12,
+            1.4
+          ],
+          "offset": [
+            0.7,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "material": {
+        "category": "metal",
+        "color_hint": "neutral",
+        "finish": "matte"
+      },
+      "origin": {
+        "pivot": "center",
+        "initial_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "assembly_anchor": {
+        "type": "center",
+        "local_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "bounding_box": {
+        "width": 1.4,
+        "height": 1.4,
+        "depth": 0.12
+      },
+      "render_metadata": {
+        "lod": "medium",
+        "subdivision": 0,
+        "bevel": true,
+        "motion_refs": [],
+        "source_pages": [
+          4
+        ]
+      }
+    },
+    {
+      "geometry_uid": "G0004",
+      "part_ref": "OBJ0004",
+      "semantic_geometry": {
+        "type": "frame",
+        "role": "structural",
+        "is_composite": true,
+        "symmetry": "bilateral",
+        "estimated_scale": "medium"
+      },
+      "primitive_geometry": [
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.4,
+            0.12,
+            0.12
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.4,
+            0.12,
+            0.12
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            -0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "primitive": "cuboid",
+          "size": [
+            0.12,
+            0.12,
+            1.4
+          ],
+          "offset": [
+            -0.7,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "primitive": "cuboid",
+          "size": [
+            0.12,
+            0.12,
+            1.4
+          ],
+          "offset": [
+            0.7,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "material": {
+        "category": "metal",
+        "color_hint": "neutral",
+        "finish": "matte"
+      },
+      "origin": {
+        "pivot": "center",
+        "initial_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "assembly_anchor": {
+        "type": "center",
+        "local_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "bounding_box": {
+        "width": 1.4,
+        "height": 1.4,
+        "depth": 0.12
+      },
+      "render_metadata": {
+        "lod": "medium",
+        "subdivision": 0,
+        "bevel": true,
+        "motion_refs": [],
+        "source_pages": [
+          4
+        ]
+      }
+    },
+    {
+      "geometry_uid": "G0005",
+      "part_ref": "OBJ0005",
+      "semantic_geometry": {
+        "type": "frame",
+        "role": "structural",
+        "is_composite": true,
+        "symmetry": "bilateral",
+        "estimated_scale": "medium"
+      },
+      "primitive_geometry": [
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.4,
+            0.12,
+            0.12
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.4,
+            0.12,
+            0.12
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            -0.7
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "primitive": "cuboid",
+          "size": [
+            0.12,
+            0.12,
+            1.4
+          ],
+          "offset": [
+            -0.7,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "primitive": "cuboid",
+          "size": [
+            0.12,
+            0.12,
+            1.4
+          ],
+          "offset": [
+            0.7,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "material": {
+        "category": "metal",
+        "color_hint": "neutral",
+        "finish": "matte"
+      },
+      "origin": {
+        "pivot": "center",
+        "initial_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "assembly_anchor": {
+        "type": "center",
+        "local_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "bounding_box": {
+        "width": 1.4,
+        "height": 1.4,
+        "depth": 0.12
+      },
+      "render_metadata": {
+        "lod": "medium",
+        "subdivision": 0,
+        "bevel": true,
+        "motion_refs": [],
+        "source_pages": [
+          4
+        ]
+      }
+    },
+    {
+      "geometry_uid": "G0006",
+      "part_ref": "OBJ0006",
+      "semantic_geometry": {
+        "type": "beam",
+        "role": "structural",
+        "is_composite": false,
+        "symmetry": "bilateral",
+        "estimated_scale": "medium"
+      },
+      "primitive_geometry": [
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.2,
+            0.08,
+            0.08
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "material": {
+        "category": "metal",
+        "color_hint": "neutral",
+        "finish": "matte"
+      },
+      "origin": {
+        "pivot": "center",
+        "initial_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "assembly_anchor": {
+        "type": "center",
+        "local_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "bounding_box": {
+        "width": 1.2,
+        "height": 0.08,
+        "depth": 0.08
+      },
+      "render_metadata": {
+        "lod": "medium",
+        "subdivision": 0,
+        "bevel": true,
+        "motion_refs": [],
+        "source_pages": [
+          4
+        ]
+      }
+    },
+    {
+      "geometry_uid": "G0007",
+      "part_ref": "OBJ0007",
+      "semantic_geometry": {
+        "type": "beam",
+        "role": "structural",
+        "is_composite": false,
+        "symmetry": "bilateral",
+        "estimated_scale": "medium"
+      },
+      "primitive_geometry": [
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.2,
+            0.08,
+            0.08
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "material": {
+        "category": "metal",
+        "color_hint": "neutral",
+        "finish": "matte"
+      },
+      "origin": {
+        "pivot": "center",
+        "initial_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "assembly_anchor": {
+        "type": "center",
+        "local_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "bounding_box": {
+        "width": 1.2,
+        "height": 0.08,
+        "depth": 0.08
+      },
+      "render_metadata": {
+        "lod": "medium",
+        "subdivision": 0,
+        "bevel": true,
+        "motion_refs": [],
+        "source_pages": [
+          4
+        ]
+      }
+    },
+    {
+      "geometry_uid": "G0008",
+      "part_ref": "OBJ0008",
+      "semantic_geometry": {
+        "type": "beam",
+        "role": "structural",
+        "is_composite": false,
+        "symmetry": "bilateral",
+        "estimated_scale": "medium"
+      },
+      "primitive_geometry": [
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.2,
+            0.08,
+            0.08
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "material": {
+        "category": "metal",
+        "color_hint": "neutral",
+        "finish": "matte"
+      },
+      "origin": {
+        "pivot": "center",
+        "initial_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "assembly_anchor": {
+        "type": "center",
+        "local_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "bounding_box": {
+        "width": 1.2,
+        "height": 0.08,
+        "depth": 0.08
+      },
+      "render_metadata": {
+        "lod": "medium",
+        "subdivision": 0,
+        "bevel": true,
+        "motion_refs": [],
+        "source_pages": [
+          4
+        ]
+      }
+    },
+    {
+      "geometry_uid": "G0009",
+      "part_ref": "OBJ0009",
+      "semantic_geometry": {
+        "type": "beam",
+        "role": "structural",
+        "is_composite": false,
+        "symmetry": "bilateral",
+        "estimated_scale": "medium"
+      },
+      "primitive_geometry": [
+        {
+          "primitive": "cuboid",
+          "size": [
+            1.2,
+            0.08,
+            0.08
+          ],
+          "offset": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "material": {
+        "category": "metal",
+        "color_hint": "neutral",
+        "finish": "matte"
+      },
+      "origin": {
+        "pivot": "center",
+        "initial_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "assembly_anchor": {
+        "type": "center",
+        "local_position": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "bounding_box": {
+        "width": 1.2,
+        "height": 0.08,
+        "depth": 0.08
+      },
+      "render_metadata": {
+        "lod": "medium",
+        "subdivision": 0,
+        "bevel": true,
+        "motion_refs": [],
+        "source_pages": [
+          4
+        ]
+      }
+    }
+  ],
+  "geometry_to_object_map": {
+    "OBJ0001": "G0001",
+    "OBJ0002": "G0002",
+    "OBJ0003": "G0003",
+    "OBJ0004": "G0004",
+    "OBJ0005": "G0005",
+    "OBJ0006": "G0006",
+    "OBJ0007": "G0007",
+    "OBJ0008": "G0008",
+    "OBJ0009": "G0009"
+  },
+  "warnings": []
+}

@@ -1,4 +1,5 @@
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -225,14 +226,16 @@ def build_primitives(shape_family: str, size: Tuple[float, float, float]) -> Lis
     return build_irregular(size)
 
 
+def step_node_refs(step: Dict[str, Any]) -> List[str]:
+    """Every node a motion_plan.json step moves or attaches to."""
+    return step.get("moving_nodes", []) + step.get("target_nodes", [])
+
+
 def collect_motion_refs(part_uid: str, motion_plan: Dict[str, Any]) -> List[str]:
     refs = []
 
     for step in motion_plan.get("steps", []):
-        moving = step.get("moving_objects", [])
-        targets = step.get("target_objects", [])
-
-        if part_uid in moving or part_uid in targets:
+        if part_uid in step_node_refs(step):
             refs.append(step.get("step_uid"))
 
     return refs
@@ -333,7 +336,7 @@ def validate_geometry_spec(spec: Dict[str, Any], graph: Dict[str, Any], motion_p
             warnings.append(f"Geometry object has no primitives: {gid}")
 
     for step in motion_plan.get("steps", []):
-        for obj_ref in step.get("moving_objects", []) + step.get("target_objects", []):
+        for obj_ref in step_node_refs(step):
             if obj_ref.startswith("OBJ") and obj_ref not in geometry_map:
                 warnings.append(f"Motion step {step.get('step_uid')} references object without geometry: {obj_ref}")
 
@@ -393,4 +396,10 @@ def build_geometry_spec(
 
 
 if __name__ == "__main__":
-    build_geometry_spec()
+    result = build_geometry_spec()
+
+    if not result["objects"]:
+        sys.exit(
+            "ERROR: the assembly graph has no parts, so there is no geometry to render. "
+            "Check universal_assembly_graph.json."
+        )

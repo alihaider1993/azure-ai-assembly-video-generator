@@ -1,0 +1,528 @@
+[
+  {
+    "page_number": 1,
+    "page_type": "cover",
+    "visible_parts": [],
+    "visible_fasteners": [],
+    "visible_tools": [],
+    "observed_actions": [],
+    "final_visible_structure": "MELLTORP rectangular table: flat tabletop on a metal underframe of four rails and four square-tube legs",
+    "uncertainties": [
+      "Cover page; product name MELLTORP printed at the top."
+    ]
+  },
+  {
+    "page_number": 2,
+    "page_type": "warning",
+    "visible_parts": [],
+    "visible_fasteners": [],
+    "visible_tools": [],
+    "observed_actions": [],
+    "final_visible_structure": "",
+    "uncertainties": [
+      "General advice pictograms: assemble on a soft surface, do not hammer, contact IKEA if unsure. No assembly action."
+    ]
+  },
+  {
+    "page_number": 3,
+    "page_type": "parts_list",
+    "visible_parts": [
+      {
+        "part_uid": "P003_001",
+        "manual_label": "131337",
+        "name": "corner bracket",
+        "visual_description": "small folded metal bracket with one round centre hole and two side flanges",
+        "shape_family": "bracket",
+        "material_hint": "metal",
+        "quantity_visible": 4,
+        "connection_features": [
+          {
+            "feature_type": "hole",
+            "count": 1,
+            "location_hint": "centre of the bracket face"
+          },
+          {
+            "feature_type": "connector",
+            "count": 2,
+            "location_hint": "side flanges that hook into the rail ends"
+          }
+        ],
+        "page_position": "top"
+      }
+    ],
+    "visible_fasteners": [
+      {
+        "fastener_uid": "F003_001",
+        "manual_label": "10051905",
+        "name": "hex socket screw",
+        "shape_family": "screw",
+        "quantity_visible": 8
+      },
+      {
+        "fastener_uid": "F003_002",
+        "manual_label": "100469",
+        "name": "hex head bolt (100469 / 131128)",
+        "shape_family": "bolt",
+        "quantity_visible": 4
+      },
+      {
+        "fastener_uid": "F003_003",
+        "manual_label": "100843",
+        "name": "spring washer",
+        "shape_family": "washer",
+        "quantity_visible": 4
+      },
+      {
+        "fastener_uid": "F003_004",
+        "manual_label": "190015",
+        "name": "plastic plug",
+        "shape_family": "dowel",
+        "quantity_visible": 8
+      }
+    ],
+    "visible_tools": [
+      {
+        "tool_uid": "T003_001",
+        "name": "spanner 128632"
+      },
+      {
+        "tool_uid": "T003_002",
+        "name": "allen key 100001"
+      }
+    ],
+    "observed_actions": [],
+    "final_visible_structure": "",
+    "uncertainties": [
+      "Structural parts (tabletop, rails, legs) are not shown in this inventory; only hardware and tools."
+    ]
+  },
+  {
+    "page_number": 4,
+    "page_type": "assembly_step",
+    "visible_parts": [
+      {
+        "part_uid": "P004_001",
+        "manual_label": "",
+        "name": "tabletop",
+        "visual_description": "large flat rectangular tabletop lying upside down",
+        "shape_family": "panel",
+        "material_hint": "wood",
+        "quantity_visible": 1,
+        "connection_features": [
+          {
+            "feature_type": "hole",
+            "count": 8,
+            "location_hint": "small pre-drilled holes on the underside along both long edges"
+          }
+        ],
+        "page_position": "bottom"
+      },
+      {
+        "part_uid": "P004_002",
+        "manual_label": "",
+        "name": "long rail",
+        "visual_description": "two long rectangular steel tube rails held above the tabletop along its long edges",
+        "shape_family": "beam",
+        "material_hint": "metal",
+        "quantity_visible": 2,
+        "connection_features": [
+          {
+            "feature_type": "hole",
+            "count": 4,
+            "location_hint": "screw holes along the top face"
+          },
+          {
+            "feature_type": "slot",
+            "count": 2,
+            "location_hint": "slotted open ends"
+          }
+        ],
+        "page_position": "center"
+      }
+    ],
+    "visible_fasteners": [
+      {
+        "fastener_uid": "F004_001",
+        "manual_label": "10051905",
+        "name": "hex socket screw",
+        "shape_family": "screw",
+        "quantity_visible": 8
+      },
+      {
+        "fastener_uid": "F004_002",
+        "manual_label": "190015",
+        "name": "plastic plug",
+        "shape_family": "dowel",
+        "quantity_visible": 8
+      }
+    ],
+    "visible_tools": [
+      {
+        "tool_uid": "T004_001",
+        "name": "allen key 100001"
+      }
+    ],
+    "observed_actions": [
+      {
+        "action_uid": "A004_001",
+        "action_type": "insert",
+        "moving_part_ref": "",
+        "target_part_ref": "P004_001",
+        "fastener_ref": "F004_002",
+        "tool_ref": "",
+        "direction_hint": "down",
+        "visual_evidence": "8x plastic plug 190015 pressed into the holes on the underside of the tabletop"
+      },
+      {
+        "action_uid": "A004_002",
+        "action_type": "place",
+        "moving_part_ref": "P004_002",
+        "target_part_ref": "P004_001",
+        "fastener_ref": "",
+        "tool_ref": "",
+        "direction_hint": "down",
+        "visual_evidence": "two long rails lowered onto the tabletop along the long edges, over the plastic plugs"
+      },
+      {
+        "action_uid": "A004_003",
+        "action_type": "tighten",
+        "moving_part_ref": "P004_002",
+        "target_part_ref": "P004_001",
+        "fastener_ref": "F004_001",
+        "tool_ref": "T004_001",
+        "direction_hint": "clockwise",
+        "visual_evidence": "8x hex socket screw 10051905 driven down through the long rail into the tabletop and turned clockwise with allen key 100001"
+      }
+    ],
+    "final_visible_structure": "two long rails screwed to the underside of the upside-down tabletop",
+    "uncertainties": [
+      "Step number 1. Inset shows the rail end profile with its slot."
+    ]
+  },
+  {
+    "page_number": 5,
+    "page_type": "assembly_step",
+    "visible_parts": [
+      {
+        "part_uid": "P005_001",
+        "manual_label": "",
+        "name": "tabletop",
+        "visual_description": "upside-down tabletop with the two long rails already screwed on",
+        "shape_family": "panel",
+        "material_hint": "wood",
+        "quantity_visible": 1,
+        "connection_features": [
+          {
+            "feature_type": "hole",
+            "count": 8,
+            "location_hint": "small pre-drilled holes on the underside along both long edges"
+          }
+        ],
+        "page_position": "bottom"
+      },
+      {
+        "part_uid": "P005_002",
+        "manual_label": "",
+        "name": "long rail",
+        "visual_description": "long rails fixed along the long edges of the tabletop",
+        "shape_family": "beam",
+        "material_hint": "metal",
+        "quantity_visible": 2,
+        "connection_features": [
+          {
+            "feature_type": "hole",
+            "count": 4,
+            "location_hint": "screw holes along the top face"
+          },
+          {
+            "feature_type": "slot",
+            "count": 2,
+            "location_hint": "slotted open ends"
+          }
+        ],
+        "page_position": "center"
+      },
+      {
+        "part_uid": "P005_003",
+        "manual_label": "131337",
+        "name": "corner bracket",
+        "visual_description": "small folded metal bracket with one round centre hole and two side flanges",
+        "shape_family": "bracket",
+        "material_hint": "metal",
+        "quantity_visible": 4,
+        "connection_features": [
+          {
+            "feature_type": "hole",
+            "count": 1,
+            "location_hint": "centre of the bracket face"
+          },
+          {
+            "feature_type": "connector",
+            "count": 2,
+            "location_hint": "side flanges that hook into the rail ends"
+          }
+        ],
+        "page_position": "right"
+      },
+      {
+        "part_uid": "P005_004",
+        "manual_label": "",
+        "name": "short rail",
+        "visual_description": "short rectangular steel tube rail with slotted open ends",
+        "shape_family": "beam",
+        "material_hint": "metal",
+        "quantity_visible": 2,
+        "connection_features": [
+          {
+            "feature_type": "slot",
+            "count": 2,
+            "location_hint": "slotted open ends"
+          }
+        ],
+        "page_position": "left"
+      }
+    ],
+    "visible_fasteners": [],
+    "visible_tools": [],
+    "observed_actions": [
+      {
+        "action_uid": "A005_001",
+        "action_type": "insert",
+        "moving_part_ref": "P005_003",
+        "target_part_ref": "P005_002",
+        "fastener_ref": "",
+        "tool_ref": "",
+        "direction_hint": "inward",
+        "visual_evidence": "4x corner bracket 131337 pushed into the open slotted end of each long rail (arrow in close-up)"
+      },
+      {
+        "action_uid": "A005_002",
+        "action_type": "slide",
+        "moving_part_ref": "P005_004",
+        "target_part_ref": "P005_002",
+        "fastener_ref": "",
+        "tool_ref": "",
+        "direction_hint": "inward",
+        "visual_evidence": "two short rails pushed in between the long rail ends at the short edges of the tabletop (arrows)"
+      },
+      {
+        "action_uid": "A005_003",
+        "action_type": "rotate",
+        "moving_part_ref": "P005_003",
+        "target_part_ref": "P005_004",
+        "fastener_ref": "",
+        "tool_ref": "",
+        "direction_hint": "counterclockwise",
+        "visual_evidence": "4x corner bracket 131337 turned so its flange hooks into the end of the short rail (curved arrow)"
+      }
+    ],
+    "final_visible_structure": "rectangular rail frame of two long and two short rails on the upside-down tabletop",
+    "uncertainties": [
+      "Page holds steps 2 and 3."
+    ]
+  },
+  {
+    "page_number": 6,
+    "page_type": "assembly_step",
+    "visible_parts": [
+      {
+        "part_uid": "P006_001",
+        "manual_label": "",
+        "name": "leg",
+        "visual_description": "long square steel tube leg standing upright with a hole near its top end",
+        "shape_family": "beam",
+        "material_hint": "metal",
+        "quantity_visible": 4,
+        "connection_features": [
+          {
+            "feature_type": "hole",
+            "count": 1,
+            "location_hint": "near the top end, facing the corner bracket"
+          }
+        ],
+        "page_position": "center"
+      },
+      {
+        "part_uid": "P006_002",
+        "manual_label": "",
+        "name": "assembled frame",
+        "visual_description": "upside-down tabletop with long and short rails joined by corner brackets",
+        "shape_family": "frame",
+        "material_hint": "mixed",
+        "quantity_visible": 1,
+        "connection_features": [],
+        "page_position": "bottom"
+      },
+      {
+        "part_uid": "P006_003",
+        "manual_label": "131337",
+        "name": "corner bracket",
+        "visual_description": "small folded metal bracket with one round centre hole and two side flanges",
+        "shape_family": "bracket",
+        "material_hint": "metal",
+        "quantity_visible": 1,
+        "connection_features": [
+          {
+            "feature_type": "hole",
+            "count": 1,
+            "location_hint": "centre of the bracket face"
+          },
+          {
+            "feature_type": "connector",
+            "count": 2,
+            "location_hint": "side flanges that hook into the rail ends"
+          }
+        ],
+        "page_position": "top"
+      }
+    ],
+    "visible_fasteners": [
+      {
+        "fastener_uid": "F006_001",
+        "manual_label": "100469",
+        "name": "hex head bolt (100469 / 131128)",
+        "shape_family": "bolt",
+        "quantity_visible": 4
+      },
+      {
+        "fastener_uid": "F006_002",
+        "manual_label": "100843",
+        "name": "spring washer",
+        "shape_family": "washer",
+        "quantity_visible": 4
+      }
+    ],
+    "visible_tools": [
+      {
+        "tool_uid": "T006_001",
+        "name": "spanner 128632"
+      }
+    ],
+    "observed_actions": [
+      {
+        "action_uid": "A006_001",
+        "action_type": "place",
+        "moving_part_ref": "P006_001",
+        "target_part_ref": "P006_002",
+        "fastener_ref": "",
+        "tool_ref": "",
+        "direction_hint": "down",
+        "visual_evidence": "4 legs set upright into the inside corners of the assembled frame"
+      },
+      {
+        "action_uid": "A006_002",
+        "action_type": "insert",
+        "moving_part_ref": "P006_003",
+        "target_part_ref": "P006_001",
+        "fastener_ref": "F006_001",
+        "tool_ref": "T006_001",
+        "direction_hint": "clockwise",
+        "visual_evidence": "4x hex head bolt 100469 with spring washer 100843 put through the corner bracket 131337 into each leg and screwed in clockwise"
+      }
+    ],
+    "final_visible_structure": "four legs standing in the corners of the upside-down frame with bolts loosely fitted",
+    "uncertainties": [
+      "Step 4. Two pictograms: spring washer under the bolt head is correct; the crossed-out one shows the wrong fit."
+    ]
+  },
+  {
+    "page_number": 7,
+    "page_type": "assembly_step",
+    "visible_parts": [
+      {
+        "part_uid": "P007_001",
+        "manual_label": "",
+        "name": "leg",
+        "visual_description": "long square steel tube leg standing upright with a hole near its top end",
+        "shape_family": "beam",
+        "material_hint": "metal",
+        "quantity_visible": 4,
+        "connection_features": [
+          {
+            "feature_type": "hole",
+            "count": 1,
+            "location_hint": "near the top end, facing the corner bracket"
+          }
+        ],
+        "page_position": "center"
+      },
+      {
+        "part_uid": "P007_002",
+        "manual_label": "",
+        "name": "assembled frame",
+        "visual_description": "upside-down tabletop and rail frame with four legs attached at the corners",
+        "shape_family": "frame",
+        "material_hint": "mixed",
+        "quantity_visible": 1,
+        "connection_features": [],
+        "page_position": "bottom"
+      },
+      {
+        "part_uid": "P007_003",
+        "manual_label": "131337",
+        "name": "corner bracket",
+        "visual_description": "small folded metal bracket with one round centre hole and two side flanges",
+        "shape_family": "bracket",
+        "material_hint": "metal",
+        "quantity_visible": 1,
+        "connection_features": [
+          {
+            "feature_type": "hole",
+            "count": 1,
+            "location_hint": "centre of the bracket face"
+          },
+          {
+            "feature_type": "connector",
+            "count": 2,
+            "location_hint": "side flanges that hook into the rail ends"
+          }
+        ],
+        "page_position": "top"
+      }
+    ],
+    "visible_fasteners": [
+      {
+        "fastener_uid": "F007_001",
+        "manual_label": "",
+        "name": "hex head bolt",
+        "shape_family": "bolt",
+        "quantity_visible": 4
+      }
+    ],
+    "visible_tools": [
+      {
+        "tool_uid": "T007_001",
+        "name": "spanner 128632"
+      }
+    ],
+    "observed_actions": [
+      {
+        "action_uid": "A007_001",
+        "action_type": "tighten",
+        "moving_part_ref": "P007_001",
+        "target_part_ref": "P007_002",
+        "fastener_ref": "F007_001",
+        "tool_ref": "T007_001",
+        "direction_hint": "clockwise",
+        "visual_evidence": "4x hex head bolt in each corner bracket fully tightened clockwise with spanner 128632"
+      }
+    ],
+    "final_visible_structure": "complete table underframe with four legs bolted to the rail frame, still upside down",
+    "uncertainties": [
+      "Step 5. Info panel shows the spanner crossed out over a waste bin; probably means keep the spanner for re-tightening.",
+      "Bolt label numbers are not printed on this page."
+    ]
+  },
+  {
+    "page_number": 8,
+    "page_type": "unknown",
+    "visible_parts": [],
+    "visible_fasteners": [],
+    "visible_tools": [],
+    "observed_actions": [],
+    "final_visible_structure": "",
+    "uncertainties": [
+      "Back page with copyright and date only; no assembly content."
+    ]
+  }
+]
